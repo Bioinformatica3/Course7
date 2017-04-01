@@ -6,11 +6,7 @@
 package test;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.LinkedHashMap;
 import javax.swing.JFileChooser;
-import org.biojava.nbio.core.sequence.DNASequence;
-import org.biojava.nbio.core.sequence.io.FastaReaderHelper;
 
 /**
  *
@@ -60,14 +56,9 @@ public class BestandKiezer {
     }
 
     public String browseBestandPad() {
-        try {
 
-            this.inputFile = fileBrowser();
-            this.inputPad = inputFile.getAbsolutePath();
-        } catch (NullPointerException e) { //fixen
-
-            e.printStackTrace();
-        }
+        this.inputFile = browseBestand();
+        this.inputPad = inputFile.getAbsolutePath();
 
         return this.inputPad;
     }
@@ -89,7 +80,5 @@ public class BestandKiezer {
         }
         return input;
     }
-
- 
 
 }

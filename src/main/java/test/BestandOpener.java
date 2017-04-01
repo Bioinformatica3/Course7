@@ -8,7 +8,6 @@ package test;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import javax.swing.JTextField;
 import org.biojava.nbio.core.sequence.DNASequence;
 import org.biojava.nbio.core.sequence.io.FastaReaderHelper;
 
@@ -18,26 +17,31 @@ import org.biojava.nbio.core.sequence.io.FastaReaderHelper;
  */
 public class BestandOpener {
 
-    public  LinkedHashMap<String, DNASequence> openDNABestand(String filePad) throws IOException, NullPointerException {
-        return FastaReaderHelper.readFastaDNASequence(new File(filePad));
-    }
-
-    public LinkedHashMap<String, DNASequence> openDNABestand(File fastaFile) throws IOException, NullPointerException {
-        return FastaReaderHelper.readFastaDNASequence(fastaFile);
-
-    }
-//nodig?
-    public  LinkedHashMap<String, DNASequence> laadFASTABestand(File fastaFile) { //error handling
-        LinkedHashMap<String, DNASequence> fastaData = new LinkedHashMap<>();
+//exceptions fixen, mogelijk statisch?
+    public LinkedHashMap<String, DNASequence> openDNABestand(String filePad) {
+        LinkedHashMap<String, DNASequence> fastaSequentie = new LinkedHashMap<String, DNASequence>();
 
         try {
+            fastaSequentie = FastaReaderHelper.readFastaDNASequence(new File(filePad));
+        } catch (IOException ex) {
 
-            fastaData = openDNABestand(fastaFile);
+        } catch (NullPointerException ex) {
 
-        } catch (IOException e) {
-            e.printStackTrace(); //fix
         }
-        return fastaData;
-
+        return fastaSequentie;
     }
+
+    public LinkedHashMap<String, DNASequence> openDNABestand(File fastaFile) {
+        LinkedHashMap<String, DNASequence> fastaSequentie = new LinkedHashMap<String, DNASequence>();
+
+        try {
+            fastaSequentie = FastaReaderHelper.readFastaDNASequence(fastaFile);
+        } catch (IOException ex) {
+
+        } catch (NullPointerException ex) {
+
+        }
+        return fastaSequentie;
+    }
+
 }

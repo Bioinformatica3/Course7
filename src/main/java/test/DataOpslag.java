@@ -7,8 +7,6 @@ package test;
 
 import java.sql.*;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -67,29 +65,13 @@ public class DataOpslag {
         //vervang de [ en ] als uiteindes van de array met ( en ) voor sql query
         attributenAlsQuery = attributenAlsQuery.replace("[", "(").replace("]", ")");
 
-        //vervang de [ en ] als uiteindes van de array met ( en ) en single quotes ' voor sql query
+        //vervang de [ en ] als uiteindes van de array met ( en ) en voeg single quotes ' toe rond elke waarde voor sql query
         waardesAlsQuery = Arrays.toString(waardes);
         waardesAlsQuery = waardesAlsQuery.replace("[", "('").replace("]", "')");
         waardesAlsQuery = waardesAlsQuery.replace(",", "','");
 
         String query = INSERT + tabel + SPACE + attributenAlsQuery + WAARDES + waardesAlsQuery;
-        System.out.println(query);
-
-        return query;
-    }
-
-    public String makeInsertStringQuery(String tabel, String attribuut, Object waarde) throws SQLException {
-
-        Object waardeAlsQuery;
-        String attribuutAlsQuery;
-
-        //nog strings padden met ( en )
-        waardeAlsQuery = waarde;
-        attribuutAlsQuery = attribuut;
-
-        String query = INSERT + tabel + SPACE + attribuutAlsQuery + WAARDES + waardeAlsQuery;
-        System.out.println(query);
-
+        
         return query;
     }
 

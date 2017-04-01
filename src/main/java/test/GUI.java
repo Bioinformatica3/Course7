@@ -216,7 +216,7 @@ public class GUI extends javax.swing.JFrame {
         fastaFile = new File(filePad);
 
         BestandOpener opener = new BestandOpener();
-        ingeladenSequentie = opener.laadFASTABestand(fastaFile);
+        ingeladenSequentie = opener.openDNABestand(fastaFile);
 
         fastaSequentie = FASTASequentieHelper.saveFASTASequentie(ingeladenSequentie);
         headerLabel.setText(fastaSequentie.getTitel());
@@ -226,10 +226,6 @@ public class GUI extends javax.swing.JFrame {
         aaSequentieTextPaneUpper.setText(visual.getForwardAminoSequenties());
         aaSequentieTextPaneLower.setText(visual.getReverseAminoSequenties());
 
-        // visualiseerSequentie(ingeladenSequentie, dnaSequentieTextPane);
-        //visualiseerAminoSequentie(ingeladenSequentie);
-        //   guiManager.visualiseerSequentie(ingeladenSequentie, aaSequentieTextPaneUpper);
-        //guiManager.visualiseerSequentie(ingeladenSequentie, aaSequentieTextPaneLower);
 //verbind de scroll bars van de afzonderlijke text panes aan elkaar zodat gebruiker maar in 1 pane hoeft te scrollen
         dummyLowerScrollPane.setHorizontalScrollBar(dummyUpperScrollPane.getHorizontalScrollBar());
         seqScrollPane.setHorizontalScrollBar(dummyLowerScrollPane.getHorizontalScrollBar());
@@ -254,7 +250,7 @@ public class GUI extends javax.swing.JFrame {
         } catch (CompoundNotFoundException ex) { //FIX DIT
             ex.printStackTrace();
         }
-
+        
         //testo GET OUT OF GUI
         ArrayList<ORF> test = orfFinder.getORFLijst();
         String phuck;
@@ -276,8 +272,9 @@ public class GUI extends javax.swing.JFrame {
         for (ORF orf : test) {
             orfStart = orf.getStartPos();
             orfEind = orf.getEindPos();
+            System.out.println(orfStart + " " + orfEind);
             orfFrame = orfStart % 3;
-
+            System.out.println(orfFrame + " Strand: " + orf.getStrand());
             switch (orf.getStrand()) {
                 case ('+'):
                     for (int i = 0; i < orfFrame; i++) {
@@ -294,18 +291,15 @@ public class GUI extends javax.swing.JFrame {
                     break;
 
                 case ('-'):
-                    totaalLengte = phuck2.length() - 6; // minus newline characters
+                    
                     for (int i = 0; i < orfFrame; i++) {
                         orfStart += istheword[i].length();
                         orfEind += istheword[i].length();
 
-                        
                     }
 
                     try {
                         //SEQUENTIE IS IN REVERSE DUS GOTTA TURN AROUND POSITIES
-                        orfStart = totaalLengte - orfStart;
-                        orfEind = totaalLengte - orfEind;
                         Visualisator.highlight(orfEind, orfStart, aaSequentieTextPaneLower);
                     } catch (BadLocationException ex) {
                         Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);

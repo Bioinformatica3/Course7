@@ -47,7 +47,7 @@ public class Visualisator {
 //        StringBuilder aaBuilder = new StringBuilder();
 //
 //        dnaSequentie = fastaSequentie.getSequentie();
-//        aminoSequenties = AminoVoorspeller.bepaalAminoSequentiesString(dnaSequentie);
+//        aminoSequenties = AminoVoorspeller.bepaaPerFramelAminosString(dnaSequentie);
 //
 //        for (Map.Entry<Frame, String> frameSequentie : aminoSequenties.entrySet()) {
 //
@@ -87,7 +87,7 @@ public class Visualisator {
         StringBuilder aaComplementBuilder = new StringBuilder();
 
         dnaSequentie = fastaSequentie.getSequentie();
-        aminoSequenties = AminoVoorspeller.bepaalAminoSequentiesString(dnaSequentie);
+        aminoSequenties = AminoVoorspeller.bepaaPerFramelAminosString(dnaSequentie);
 
         for (Map.Entry<Frame, String> frameSequentie : aminoSequenties.entrySet()) {
 
@@ -125,7 +125,7 @@ public class Visualisator {
         StringBuilder aaBuilder = new StringBuilder();
 
         dnaSequentie = fastaSequentie.getSequentie();
-        aminoSequenties = AminoVoorspeller.bepaalAminoSequentiesString(dnaSequentie);
+        aminoSequenties = AminoVoorspeller.bepaaPerFramelAminosString(dnaSequentie);
 
         for (Map.Entry<Frame, String> frameSequentie : aminoSequenties.entrySet()) {
 
@@ -160,7 +160,7 @@ public class Visualisator {
         StringBuilder aaComplementBuilder = new StringBuilder();
 
         dnaSequentie = fastaSequentie.getSequentie();
-        aminoSequenties = AminoVoorspeller.bepaalAminoSequentiesString(dnaSequentie);
+        aminoSequenties = AminoVoorspeller.bepaaPerFramelAminosString(dnaSequentie);
 
         for (Map.Entry<Frame, String> frameSequentie : aminoSequenties.entrySet()) {
 

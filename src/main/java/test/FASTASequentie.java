@@ -5,8 +5,8 @@
  */
 package test;
 
-import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.util.Objects;
 import org.biojava.nbio.core.sequence.DNASequence;
 
 /**
@@ -43,6 +43,40 @@ public class FASTASequentie {
     }
     public String getSequentieString(){
         return this.dnaSequentie.getSequenceAsString();
+    }
+
+    @Override
+    public String toString() {
+        return "FASTASequentie{" + "DNA sequentie= " + dnaSequentie + ", DNA header= " + dnaTitel + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.dnaSequentie);
+        hash = 83 * hash + Objects.hashCode(this.dnaTitel);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FASTASequentie other = (FASTASequentie) obj;
+        if (!Objects.equals(this.dnaTitel, other.dnaTitel)) {
+            return false;
+        }
+        if (!Objects.equals(this.dnaSequentie, other.dnaSequentie)) {
+            return false;
+        }
+        return true;
     }
     
   

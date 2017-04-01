@@ -6,17 +6,10 @@
 package test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
-import org.biojava.nbio.core.sequence.transcription.Frame;
-import org.biojava.nbio.core.util.SequenceTools;
 
 /**
  *
@@ -44,6 +37,8 @@ public class ORFSearcher {
         dnaStrings[0] = dnaSequentie.getSequentie().getSequenceAsString();
         dnaStrings[1] = dnaSequentie.getSequentie().getReverseComplement().getSequenceAsString();
 
+        System.out.println(dnaSequentie.getSequentie().getComplement().getSequenceAsString());
+        System.out.println(dnaStrings[1]);
         for (String dnaString : dnaStrings) {
             orfMatches = ORFPATROON.matcher(dnaString);
             while (orfMatches.find()) {
@@ -55,16 +50,22 @@ public class ORFSearcher {
 
                 switch (strandCounter) {
                     case (0):
+
                         strand = '+';
                         break;
                     case (1):
                         strand = '-';
+                        //de zoekopdracht vindt plaats in de omgedraaide reverse sequentie, 
+                        //voor correcte orf posities moeten deze weer terug gedraaid worden
+                        orfBegin = dnaString.length() - orfMatches.start();
+                        orfEind = dnaString.length() - orfMatches.end();
+
                         break;
                 }
-                
-                DNASequence orfSequentie = new DNASequence(orfMatches.group());
-                ORF foundORF = new ORF(orfTitel, orfSequentie, orfBegin, orfEind,strand);
 
+                DNASequence orfSequentie = new DNASequence(orfMatches.group());
+                ORF foundORF = new ORF(orfTitel, orfSequentie, orfBegin, orfEind, strand);
+               
                 orfLijst.add(foundORF);
             }
             strandCounter++;
@@ -80,4 +81,10 @@ public class ORFSearcher {
     public void setORFLijst(ArrayList<ORF> newORFs) {
         this.orfLijst = newORFs;
     }
+
+    @Override
+    public String toString() {
+        return "ORFSearcher{" + "orfLijst= " + orfLijst + '}';
+    }
+    
 }

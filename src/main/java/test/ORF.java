@@ -5,32 +5,31 @@
  */
 package test;
 
-import java.util.Map;
+import java.util.Objects;
 import org.biojava.nbio.core.sequence.DNASequence;
-import org.biojava.nbio.core.sequence.transcription.Frame;
 
 /**
  *
  * @author Koen
  */
 public class ORF extends FASTASequentie {
- 
-    //NOG TOSTRING EN COMPARETO?
-    
+
     private static int aantalORFs;
     private int startPos;
     private int eindPos;
     private char strand;
-            
-    public ORF(String orfTitel, DNASequence inputSequentie , int startPositie, int eindPositie, char dnaStrand) {
-        super(orfTitel,inputSequentie);
+    private String titel;
+
+    public ORF(String orfTitel, DNASequence inputSequentie, int startPositie, int eindPositie, char dnaStrand) {
+        super(orfTitel, inputSequentie);
         this.startPos = startPositie;
         this.eindPos = eindPositie;
         this.strand = dnaStrand;
         aantalORFs += 1;
-        
+
     }
-    public static int getAantalORFs(){
+
+    public static int getAantalORFs() {
         return aantalORFs;
     }
 
@@ -58,7 +57,9 @@ public class ORF extends FASTASequentie {
         this.strand = newStrand;
     }
 
- 
-    
-    
+    @Override
+    public String toString() {
+        return "ORF{" + "titel= " + super.getTitel() + "start positie= " + startPos + ", eind positie= " + eindPos + ", strand= " + strand + '}';
+    }
+
 }

@@ -5,8 +5,6 @@
  */
 package test;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import org.biojava.nbio.core.sequence.DNASequence;
 import org.biojava.nbio.core.sequence.ProteinSequence;
@@ -19,46 +17,48 @@ import org.biojava.nbio.core.sequence.transcription.Frame;
  */
 public class AminoVoorspeller {
 
-    private LinkedHashMap<Frame, ProteinSequence> aminoSequenties;
-    private LinkedHashMap<Frame, String> aminoStrings;
-
-    public AminoVoorspeller(DNASequence dnaSequentie) {
-        this.aminoSequenties = bepaalAminoSequenties(dnaSequentie);
-        this.aminoStrings = bepaalAminoSequentiesString(dnaSequentie);
-
-    }
-    
-//samenvoegen?
-    public static LinkedHashMap<Frame, ProteinSequence> bepaalAminoSequenties(DNASequence dnaSequentie) {
-        LinkedHashMap<Frame, ProteinSequence> aminos = new LinkedHashMap<Frame, ProteinSequence>(7);
-        RNASequence rnaSequentie;
+//    private LinkedHashMap<Frame, ProteinSequence> aminoSequenties;
+//    private LinkedHashMap<Frame, String> aminoStrings;
+//
+//    public AminoVoorspeller(DNASequence dnaSequentie) {
+//        this.aminoSequenties = bepaalPerFrameAminos(dnaSequentie);
+//        this.aminoStrings = bepaaPerFramelAminosString(dnaSequentie);
+//
+//    }
+    public static LinkedHashMap<Frame, ProteinSequence> bepaalPerFrameAminos(DNASequence dnaSequentie) {
+        LinkedHashMap<Frame, ProteinSequence> aminos = new LinkedHashMap<Frame, ProteinSequence>(6);
         ProteinSequence aminoSequentie;
-        
-        for (Frame frameShift : Frame.getAllFrames()) {
-            rnaSequentie = dnaSequentie.getRNASequence(frameShift);
-            aminoSequentie = rnaSequentie.getProteinSequence();
-            aminos.put(frameShift, aminoSequentie);
+
+        for (Frame readingFrame : Frame.getAllFrames()) {
+            aminoSequentie = bepaalAminos(readingFrame, dnaSequentie);
+            aminos.put(readingFrame, aminoSequentie);
         }
         return aminos;
     }
 
-    public static LinkedHashMap<Frame, String> bepaalAminoSequentiesString(DNASequence dnaSequentie) {
-        LinkedHashMap<Frame, String> aminos = new LinkedHashMap<Frame, String>(7);
+    public static ProteinSequence bepaalAminos(Frame readingFrame, DNASequence dnaSequentie) {
         RNASequence rnaSequentie;
+        ProteinSequence aminoSequentie;
+
+        rnaSequentie = dnaSequentie.getRNASequence(readingFrame);
+        aminoSequentie = rnaSequentie.getProteinSequence();
+        return aminoSequentie;
+    }
+
+    public static LinkedHashMap<Frame, String> bepaaPerFramelAminosString(DNASequence dnaSequentie) {
+        LinkedHashMap<Frame, String> aminos = new LinkedHashMap<Frame, String>(6);
         ProteinSequence aminoSequentie;
         String aminoSequentieString;
-        
-        for (Frame frameShift : Frame.getAllFrames()) {
-            rnaSequentie = dnaSequentie.getRNASequence(frameShift);
-            aminoSequentie = rnaSequentie.getProteinSequence();
+
+        for (Frame readingFrame : Frame.getAllFrames()) {
+            aminoSequentie = bepaalAminos(readingFrame, dnaSequentie);
             aminoSequentieString = aminoSequentie.getSequenceAsString();
-            aminos.put(frameShift, aminoSequentieString);
+            aminos.put(readingFrame, aminoSequentieString);
         }
         return aminos;
     }
 
-    public HashMap<Frame, ProteinSequence> getAminoSequenties() {
-        return this.aminoSequenties;
-    }
-
+//    public HashMap<Frame, ProteinSequence> getAminoSequenties() {
+//        return this.aminoSequenties;
+//    }
 }
