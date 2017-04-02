@@ -8,9 +8,11 @@ package test;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
@@ -22,12 +24,14 @@ import org.biojava.nbio.core.sequence.DNASequence;
 public class GUI extends javax.swing.JFrame {
 
     private FASTASequentie fastaSequentie;
+    private SpecifiekeDataOpslag opslag;
 
     /**
      * Creates new form GUI
      */
     public GUI() {
         initComponents();
+        toonORFsButton.setEnabled(false);
 
     }
 
@@ -207,30 +211,35 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
-        String filePad;
-        File fastaFile;
-        LinkedHashMap<String, DNASequence> ingeladenSequentie = new LinkedHashMap<>();
+        try {
+            String filePad;
+            File fastaFile;
+            LinkedHashMap<String, DNASequence> ingeladenSequentie = new LinkedHashMap<>();
 
-        //noodzakelijk omdat de gebruiker ook direct filepad in kan typen ipv te browsen
-        filePad = padTextField.getText();
-        fastaFile = new File(filePad);
+            //noodzakelijk omdat de gebruiker ook direct filepad in kan typen ipv te browsen
+            filePad = padTextField.getText();
+            fastaFile = new File(filePad);
 
-        BestandOpener opener = new BestandOpener();
-        ingeladenSequentie = opener.openDNABestand(fastaFile);
+            BestandOpener opener = new BestandOpener();
+            ingeladenSequentie = opener.openDNABestand(fastaFile);
 
-        fastaSequentie = FASTASequentieHelper.saveFASTASequentie(ingeladenSequentie);
-        headerLabel.setText(fastaSequentie.getTitel());
+            fastaSequentie = FASTASequentieHelper.saveFASTASequentie(ingeladenSequentie);
+            headerLabel.setText(fastaSequentie.getTitel());
 
-        Visualisator visual = new Visualisator(fastaSequentie);
-        dnaSequentieTextPane.setText(visual.getSequentieMetComplementair());
-        aaSequentieTextPaneUpper.setText(visual.getForwardAminoSequenties());
-        aaSequentieTextPaneLower.setText(visual.getReverseAminoSequenties());
+            Visualisator visual = new Visualisator(fastaSequentie);
+            dnaSequentieTextPane.setText(visual.getSequentieMetComplementair());
+            aaSequentieTextPaneUpper.setText(visual.getForwardAminoSequenties());
+            aaSequentieTextPaneLower.setText(visual.getReverseAminoSequenties());
 
 //verbind de scroll bars van de afzonderlijke text panes aan elkaar zodat gebruiker maar in 1 pane hoeft te scrollen
-        dummyLowerScrollPane.setHorizontalScrollBar(dummyUpperScrollPane.getHorizontalScrollBar());
-        seqScrollPane.setHorizontalScrollBar(dummyLowerScrollPane.getHorizontalScrollBar());
+            dummyLowerScrollPane.setHorizontalScrollBar(dummyUpperScrollPane.getHorizontalScrollBar());
+            seqScrollPane.setHorizontalScrollBar(dummyLowerScrollPane.getHorizontalScrollBar());
 
-
+            toonORFsButton.setEnabled(true);
+            
+        } catch (OngeldigBestandException ex) {
+            errorPopup("ONGELDIG/GEEN BESTAND GEKOZEN");
+        }
     }//GEN-LAST:event_openButtonActionPerformed
 
     private void browseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseMenuItemActionPerformed
@@ -250,7 +259,7 @@ public class GUI extends javax.swing.JFrame {
         } catch (CompoundNotFoundException ex) { //FIX DIT
             ex.printStackTrace();
         }
-        
+
         //testo GET OUT OF GUI
         ArrayList<ORF> test = orfFinder.getORFLijst();
         String phuck;
@@ -272,10 +281,11 @@ public class GUI extends javax.swing.JFrame {
         for (ORF orf : test) {
             orfStart = orf.getStartPos();
             orfEind = orf.getEindPos();
-            System.out.println(orfStart + " " + orfEind);
+            //System.out.println(orfStart + " " + orfEind);
             orfFrame = orfStart % 3;
-            System.out.println(orfFrame + " Strand: " + orf.getStrand());
+            //  System.out.println(orfFrame + " Strand: " + orf.getStrand());
             switch (orf.getStrand()) {
+
                 case ('+'):
                     for (int i = 0; i < orfFrame; i++) {
                         orfStart += bird[i].length();
@@ -285,24 +295,22 @@ public class GUI extends javax.swing.JFrame {
                     try {
                         Visualisator.highlight(orfStart, orfEind, aaSequentieTextPaneUpper);
                     } catch (BadLocationException ex) {
-                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                        errorPopup("Ongeldige ORF posities gevonden");
                     }
 
                     break;
 
                 case ('-'):
-                    
+                    //waarom is de visualisatie verkeerd om?
                     for (int i = 0; i < orfFrame; i++) {
                         orfStart += istheword[i].length();
                         orfEind += istheword[i].length();
-
                     }
-
                     try {
                         //SEQUENTIE IS IN REVERSE DUS GOTTA TURN AROUND POSITIES
                         Visualisator.highlight(orfEind, orfStart, aaSequentieTextPaneLower);
                     } catch (BadLocationException ex) {
-                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                        errorPopup("Ongeldige ORF posities gevonden");
                     }
 
                     break;
@@ -311,7 +319,16 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_toonORFsButtonActionPerformed
 
     private void exportDnaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportDnaMenuItemActionPerformed
-
+        try {
+            opslag = new SpecifiekeDataOpslag();
+            opslag.saveDNA(fastaSequentie);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (NullPointerException ex) {
+            errorPopup("GEEN DNA SEQUENTIE GEVONDEN OM IN TE LADEN");
+        }
     }//GEN-LAST:event_exportDnaMenuItemActionPerformed
 
     /**
@@ -348,6 +365,17 @@ public class GUI extends javax.swing.JFrame {
 
             }
         });
+    }
+
+    /**
+     * Dient enkel om de pop-up window voor exceptions aan te maken, afhankelijk
+     * van de exception zal de werkelijk getoonde tekst verschillen
+     *
+     * @param errortekst de tekst (meegegeven bij de exception) dat getoond
+     * wordt in de pop-up window
+     */
+    public void errorPopup(String errortekst) {
+        JOptionPane.showMessageDialog(this, errortekst, "FOUTJE", JOptionPane.WARNING_MESSAGE);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

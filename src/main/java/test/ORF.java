@@ -18,7 +18,6 @@ public class ORF extends FASTASequentie {
     private int startPos;
     private int eindPos;
     private char strand;
-    private String titel;
 
     public ORF(String orfTitel, DNASequence inputSequentie, int startPositie, int eindPositie, char dnaStrand) {
         super(orfTitel, inputSequentie);

@@ -42,7 +42,6 @@ public class DataOpslag {
         this.connectie = openVerbinding(userName, password, databaseUrl);
         this.sqlStatement = connectie.createStatement();
 
-        //conn.close();
     }
 
     public static Connection openVerbinding(String gebruiker, String wachtwoord, String database) throws ClassNotFoundException, SQLException {
@@ -77,6 +76,7 @@ public class DataOpslag {
 
     public void execute(String query) throws SQLException {
         this.sqlStatement.execute(query);
+        this.sqlStatement.closeOnCompletion();
 
     }
 

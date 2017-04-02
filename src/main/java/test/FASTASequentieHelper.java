@@ -15,10 +15,14 @@ import org.biojava.nbio.core.sequence.DNASequence;
  */
 public class FASTASequentieHelper {
 
-    public static FASTASequentie saveFASTASequentie(LinkedHashMap<String, DNASequence> fastaSequentie) {
-        Map.Entry<String, DNASequence> fastaEntry;
-        fastaEntry = fastaSequentie.entrySet().iterator().next();
-        return new FASTASequentie(fastaEntry); //voor nu wordt alleen de eerste fasta sequentie opgeslagen
+    public static FASTASequentie saveFASTASequentie(LinkedHashMap<String, DNASequence> fastaSequentie) throws OngeldigBestandException {
+        if (fastaSequentie.isEmpty()) {
+            throw new OngeldigBestandException();
+        } else {
+            Map.Entry<String, DNASequence> fastaEntry;
+            fastaEntry = fastaSequentie.entrySet().iterator().next();
+            return new FASTASequentie(fastaEntry); //voor nu wordt alleen de eerste fasta sequentie opgeslagen
 
+        }
     }
 }

@@ -16,7 +16,8 @@ import org.biojava.nbio.core.sequence.io.FastaReaderHelper;
  * @author Koen
  */
 public class BestandOpener {
-
+//nog mogelijkheid om bestand lokaal op te slaan?
+    
 //exceptions fixen, mogelijk statisch?
     public LinkedHashMap<String, DNASequence> openDNABestand(String filePad) {
         LinkedHashMap<String, DNASequence> fastaSequentie = new LinkedHashMap<String, DNASequence>();

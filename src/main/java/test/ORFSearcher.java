@@ -17,7 +17,7 @@ import org.biojava.nbio.core.sequence.DNASequence;
  */
 public class ORFSearcher {
 
-    private static final String STARTSTOPCODON = "ATG([ATGC]{3})+(TAA|TGA|TAG)";
+    private static final String STARTSTOPCODON = "ATG([ATGC]{3})+?(TAA|TGA|TAG)";
     private static final Pattern ORFPATROON = Pattern.compile(STARTSTOPCODON);
     private ArrayList<ORF> orfLijst = new ArrayList<>();
 
@@ -37,8 +37,6 @@ public class ORFSearcher {
         dnaStrings[0] = dnaSequentie.getSequentie().getSequenceAsString();
         dnaStrings[1] = dnaSequentie.getSequentie().getReverseComplement().getSequenceAsString();
 
-        System.out.println(dnaSequentie.getSequentie().getComplement().getSequenceAsString());
-        System.out.println(dnaStrings[1]);
         for (String dnaString : dnaStrings) {
             orfMatches = ORFPATROON.matcher(dnaString);
             while (orfMatches.find()) {
@@ -65,7 +63,7 @@ public class ORFSearcher {
 
                 DNASequence orfSequentie = new DNASequence(orfMatches.group());
                 ORF foundORF = new ORF(orfTitel, orfSequentie, orfBegin, orfEind, strand);
-               
+
                 orfLijst.add(foundORF);
             }
             strandCounter++;
@@ -86,5 +84,5 @@ public class ORFSearcher {
     public String toString() {
         return "ORFSearcher{" + "orfLijst= " + orfLijst + '}';
     }
-    
+
 }
