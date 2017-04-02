@@ -3,9 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.groep11.orfvoorspeller.gui;
 
+import com.groep11.orfvoorspeller.bestandinladen.BestandOpener;
+import com.groep11.orfvoorspeller.bestandinladen.BestandKiezer;
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +19,15 @@ import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
+import com.groep11.orfvoorspeller.orfstonen.AminoVoorspeller;
+import com.groep11.orfvoorspeller.bestandinladen.FASTASequentie;
+import com.groep11.orfvoorspeller.bestandinladen.FASTASequentieHelper;
+import com.groep11.orfvoorspeller.orfstonen.ORF;
+import com.groep11.orfvoorspeller.orfstonen.ORFSearcher;
+import com.groep11.orfvoorspeller.bestandinladen.OngeldigBestandException;
+import com.groep11.orfvoorspeller.orfstonen.OngeldigeORFException;
+import com.groep11.orfvoorspeller.sqlverbinding.OngelijkAantalKolommenException;
+import com.groep11.orfvoorspeller.sqlverbinding.SpecifiekeDataOpslag;
 
 /**
  *
@@ -23,7 +35,10 @@ import org.biojava.nbio.core.sequence.DNASequence;
  */
 public class GUI extends javax.swing.JFrame {
 
+    //nog blast in apart tab?
     private FASTASequentie fastaSequentie;
+    private ArrayList<ORF> gevondenORFs;
+    private boolean dnaSaved = false;
     private SpecifiekeDataOpslag opslag;
 
     /**
@@ -31,7 +46,7 @@ public class GUI extends javax.swing.JFrame {
      */
     public GUI() {
         initComponents();
-        toonORFsButton.setEnabled(false);
+        vindORFsButton.setEnabled(false);
 
     }
 
@@ -49,7 +64,7 @@ public class GUI extends javax.swing.JFrame {
         seqScrollPane = new javax.swing.JScrollPane();
         dnaSequentieTextPane = new javax.swing.JTextPane();
         headerLabel = new javax.swing.JLabel();
-        toonORFsButton = new javax.swing.JButton();
+        vindORFsButton = new javax.swing.JButton();
         dummyUpperScrollPane = new javax.swing.JScrollPane();
         dummyUpperPanel = new javax.swing.JPanel();
         aaSequentieTextPaneUpper = new javax.swing.JTextPane();
@@ -70,7 +85,6 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("AANSCHOUW DE ORF VOORSPELLER");
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         openButton.setText("Open");
         openButton.addActionListener(new java.awt.event.ActionListener() {
@@ -87,10 +101,10 @@ public class GUI extends javax.swing.JFrame {
         headerLabel.setMinimumSize(new java.awt.Dimension(300, 30));
         headerLabel.setPreferredSize(new java.awt.Dimension(300, 30));
 
-        toonORFsButton.setText("Toon ORFs");
-        toonORFsButton.addActionListener(new java.awt.event.ActionListener() {
+        vindORFsButton.setText("Vind ORFs");
+        vindORFsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toonORFsButtonActionPerformed(evt);
+                vindORFsButtonActionPerformed(evt);
             }
         });
 
@@ -184,7 +198,7 @@ public class GUI extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(headerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(toonORFsButton)
+                        .addComponent(vindORFsButton)
                         .addGap(190, 190, 190))))
         );
         layout.setVerticalGroup(
@@ -196,7 +210,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(padTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(toonORFsButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(vindORFsButton, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(headerLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(dummyUpperScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -226,108 +240,88 @@ public class GUI extends javax.swing.JFrame {
             fastaSequentie = FASTASequentieHelper.saveFASTASequentie(ingeladenSequentie);
             headerLabel.setText(fastaSequentie.getTitel());
 
-            Visualisator visual = new Visualisator(fastaSequentie);
-            dnaSequentieTextPane.setText(visual.getSequentieMetComplementair());
-            aaSequentieTextPaneUpper.setText(visual.getForwardAminoSequenties());
-            aaSequentieTextPaneLower.setText(visual.getReverseAminoSequenties());
+            AminoVoorspeller aminos = new AminoVoorspeller(fastaSequentie);
+            dnaSequentieTextPane.setText(fastaSequentie.getSequentieMetComplementair());
+            aaSequentieTextPaneUpper.setText(aminos.getForwardAminoSequenties());
+            aaSequentieTextPaneLower.setText(aminos.getReverseAminoSequenties());
 
 //verbind de scroll bars van de afzonderlijke text panes aan elkaar zodat gebruiker maar in 1 pane hoeft te scrollen
             dummyLowerScrollPane.setHorizontalScrollBar(dummyUpperScrollPane.getHorizontalScrollBar());
             seqScrollPane.setHorizontalScrollBar(dummyLowerScrollPane.getHorizontalScrollBar());
 
-            toonORFsButton.setEnabled(true);
-            
+            vindORFsButton.setEnabled(true);
+
         } catch (OngeldigBestandException ex) {
             errorPopup("ONGELDIG/GEEN BESTAND GEKOZEN");
+        } catch (IOException ex) {
+            errorPopup("FOUT TIJDENS INLEZEN VAN BESTAND");
+        } catch (NullPointerException ex) {
+            errorPopup("BESTAND IS LEEG");
         }
     }//GEN-LAST:event_openButtonActionPerformed
 
     private void browseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseMenuItemActionPerformed
         BestandKiezer browser = new BestandKiezer();
-        padTextField.setText(browser.browseBestandPad()); //zet de file locatie als text in de textfield
+        try {
+            padTextField.setText(browser.setInputBrowseBestandPad()); //zet de file locatie als text in de textfield
+        } catch (OngeldigBestandException ex) {
+            errorPopup("Geen bestand gekozen..");
+        }
 
     }//GEN-LAST:event_browseMenuItemActionPerformed
 
     private void exportOrfsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportOrfsMenuItemActionPerformed
-        // TODO add your handling code here:
+        if (dnaSaved == false) {
+            errorPopup("Moet eerst de DNA sequentie opslaan voordat de bijbehorende ORFs kunnen worden opgeslagen!");
+        } else {
+            try {
+                opslag.saveORFs(gevondenORFs);
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                ex.printStackTrace();
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } catch (OngelijkAantalKolommenException ex) {
+                ex.printStackTrace();
+            }
+        }
+
     }//GEN-LAST:event_exportOrfsMenuItemActionPerformed
 
-    private void toonORFsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toonORFsButtonActionPerformed
+    private void vindORFsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vindORFsButtonActionPerformed
         ORFSearcher orfFinder = new ORFSearcher();
+
         try {
             orfFinder.vindORFs(fastaSequentie);
+            gevondenORFs = orfFinder.getORFLijst();
+            Visualisator visualisatie = new Visualisator(gevondenORFs);
+            visualisatie.visualizeOnPanes(aaSequentieTextPaneUpper, aaSequentieTextPaneLower);
+
         } catch (CompoundNotFoundException ex) { //FIX DIT
+            ex.printStackTrace();
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
+        } catch (OngeldigeORFException ex) {
             ex.printStackTrace();
         }
 
-        //testo GET OUT OF GUI
-        ArrayList<ORF> test = orfFinder.getORFLijst();
-        String phuck;
-        String phuck2;
 
-        String[] bird;
-        String[] istheword;
-        int orfStart;
-        int orfEind;
-        int orfFrame;
-        int totaalLengte;
-
-        phuck = aaSequentieTextPaneUpper.getText();
-        phuck2 = aaSequentieTextPaneLower.getText();
-
-        bird = phuck.split("\n");
-        istheword = phuck2.split("\n");
-
-        for (ORF orf : test) {
-            orfStart = orf.getStartPos();
-            orfEind = orf.getEindPos();
-            //System.out.println(orfStart + " " + orfEind);
-            orfFrame = orfStart % 3;
-            //  System.out.println(orfFrame + " Strand: " + orf.getStrand());
-            switch (orf.getStrand()) {
-
-                case ('+'):
-                    for (int i = 0; i < orfFrame; i++) {
-                        orfStart += bird[i].length();
-                        orfEind += bird[i].length();
-                    }
-
-                    try {
-                        Visualisator.highlight(orfStart, orfEind, aaSequentieTextPaneUpper);
-                    } catch (BadLocationException ex) {
-                        errorPopup("Ongeldige ORF posities gevonden");
-                    }
-
-                    break;
-
-                case ('-'):
-                    //waarom is de visualisatie verkeerd om?
-                    for (int i = 0; i < orfFrame; i++) {
-                        orfStart += istheword[i].length();
-                        orfEind += istheword[i].length();
-                    }
-                    try {
-                        //SEQUENTIE IS IN REVERSE DUS GOTTA TURN AROUND POSITIES
-                        Visualisator.highlight(orfEind, orfStart, aaSequentieTextPaneLower);
-                    } catch (BadLocationException ex) {
-                        errorPopup("Ongeldige ORF posities gevonden");
-                    }
-
-                    break;
-            }
-        }
-    }//GEN-LAST:event_toonORFsButtonActionPerformed
+    }//GEN-LAST:event_vindORFsButtonActionPerformed
 
     private void exportDnaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportDnaMenuItemActionPerformed
         try {
             opslag = new SpecifiekeDataOpslag();
             opslag.saveDNA(fastaSequentie);
+            dnaSaved = true;
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
         } catch (NullPointerException ex) {
             errorPopup("GEEN DNA SEQUENTIE GEVONDEN OM IN TE LADEN");
+        } catch (OngelijkAantalKolommenException ex) {
+            errorPopup("ERROR IN DATA VOOR SQL INSERTEN, HOEVEELHEID WAARDES ONGELIJK AAN HOEVEELHEID ATTRIBUTEN");
         }
     }//GEN-LAST:event_exportDnaMenuItemActionPerformed
 
@@ -401,6 +395,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem saveDnaMenuItem;
     private javax.swing.JMenuItem saveOrfsMenuItem;
     private javax.swing.JScrollPane seqScrollPane;
-    private javax.swing.JButton toonORFsButton;
+    private javax.swing.JButton vindORFsButton;
     // End of variables declaration//GEN-END:variables
 }

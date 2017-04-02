@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.groep11.orfvoorspeller.bestandinladen;
 
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -17,32 +17,41 @@ public class FASTASequentie {
 
     private DNASequence dnaSequentie;
     private String dnaTitel;
-    
-   public FASTASequentie(String inputTitel, DNASequence inputSequentie) {
+
+    public FASTASequentie(String inputTitel, DNASequence inputSequentie) {
         this.dnaTitel = inputTitel;
         this.dnaSequentie = inputSequentie;
 
     }
-    
+
     public FASTASequentie(Entry<String, DNASequence> inputSequentie) {
         this.dnaTitel = inputSequentie.getKey();
         this.dnaSequentie = inputSequentie.getValue();
 
     }
-    public void setTitel(String newTitel){
+
+    public void setTitel(String newTitel) {
         this.dnaTitel = newTitel;
     }
-    public String getTitel(){
+
+    public String getTitel() {
         return this.dnaTitel;
     }
-    public void setSequentie(DNASequence newSequentie){
+
+    public void setSequentie(DNASequence newSequentie) {
         this.dnaSequentie = newSequentie;
     }
-    public DNASequence getSequentie(){
+
+    public DNASequence getSequentie() {
         return this.dnaSequentie;
     }
-    public String getSequentieString(){
+
+    public String getSequentieString() {
         return this.dnaSequentie.getSequenceAsString();
+    }
+
+    public String getSequentieMetComplementair() {
+        return this.dnaSequentie.getSequenceAsString() + "\n" + this.dnaSequentie.getComplement().getSequenceAsString();
     }
 
     @Override
@@ -78,6 +87,5 @@ public class FASTASequentie {
         }
         return true;
     }
-    
-  
+
 }

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.groep11.orfvoorspeller.orfstonen;
 
+import com.groep11.orfvoorspeller.bestandinladen.FASTASequentie;
 import java.util.Objects;
 import org.biojava.nbio.core.sequence.DNASequence;
 

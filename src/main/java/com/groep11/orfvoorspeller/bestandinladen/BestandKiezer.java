@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.groep11.orfvoorspeller.bestandinladen;
 
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -42,28 +42,20 @@ public class BestandKiezer {
     }
 
     //gebruikt om de globale file variabele netjes de gekozen file te geven
-    public File browseBestand() {
-        try {
-
-            this.inputFile = fileBrowser();
-
-        } catch (NullPointerException e) { //fixen
-
-            e.printStackTrace();
-        }
-
+    public File setInputBrowseBestand() throws OngeldigBestandException {
+        this.inputFile = fileBrowser();
         return this.inputFile;
     }
 
-    public String browseBestandPad() {
+    public String setInputBrowseBestandPad() throws OngeldigBestandException {
 
-        this.inputFile = browseBestand();
+        this.inputFile = setInputBrowseBestand();
         this.inputPad = inputFile.getAbsolutePath();
 
         return this.inputPad;
     }
 
-    private File fileBrowser() {
+    public static File fileBrowser() throws OngeldigBestandException {
         int bestandFound;
 
         File input = null;
@@ -76,7 +68,7 @@ public class BestandKiezer {
             input = keuze.getSelectedFile();
 
         } else {
-            // throw new FaalException();
+             throw new OngeldigBestandException();
         }
         return input;
     }

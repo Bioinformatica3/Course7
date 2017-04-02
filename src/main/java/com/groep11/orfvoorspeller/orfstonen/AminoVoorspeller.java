@@ -3,80 +3,72 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.groep11.orfvoorspeller.orfstonen;
 
-import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
 import org.biojava.nbio.core.sequence.DNASequence;
+import org.biojava.nbio.core.sequence.ProteinSequence;
+import org.biojava.nbio.core.sequence.RNASequence;
 import org.biojava.nbio.core.sequence.transcription.Frame;
+import com.groep11.orfvoorspeller.bestandinladen.FASTASequentie;
 
 /**
  *
  * @author Koen
  */
-public class Visualisator {
+public class AminoVoorspeller {
 
     private FASTASequentie fastaSequentie;
 
-    public Visualisator(FASTASequentie sequentieTeTonen) {
-        this.fastaSequentie = sequentieTeTonen;
+    public AminoVoorspeller(FASTASequentie fastaSequentie) {
+        this.fastaSequentie = fastaSequentie;
+
     }
 
-    //naar fasta sequentie class?
-    public String getSequentieMetComplementair() {
-
-        DNASequence dnaSequentie = fastaSequentie.getSequentie();
-        return (dnaSequentie.getSequenceAsString() + "\n" + dnaSequentie.getComplement().getSequenceAsString());
-    }
-
-//    public void visualiseerAminoSequentie(FASTASequentie fastaSequentie) {
-//        DNASequence dnaSequentie;
-//        HashMap<Frame, String> aminoSequenties;
-//        Frame frame;
-//        String aminoSequentieString;
+//    private LinkedHashMap<Frame, ProteinSequence> aminoSequenties;
+//    private LinkedHashMap<Frame, String> aminoStrings;
 //
-//        StringBuilder aaComplementBuilder = new StringBuilder();
-//        StringBuilder aaBuilder = new StringBuilder();
-//
-//        dnaSequentie = fastaSequentie.getSequentie();
-//        aminoSequenties = AminoVoorspeller.bepaaPerFramelAminosString(dnaSequentie);
-//
-//        for (Map.Entry<Frame, String> frameSequentie : aminoSequenties.entrySet()) {
-//
-//            frame = frameSequentie.getKey();
-//            aminoSequentieString = frameSequentie.getValue();
-//
-//            //System.out.println(frame.wrap(dnaSequentie).getSequenceAsString());
-//            if (frame.toString().startsWith("REVERSED")) {
-//                if (aaComplementBuilder.length() != 0) {
-//                    aaComplementBuilder.append("\n");
-//
-//                }
-//                aaComplementBuilder.append(aminoSequentieString.replace("", "  "));
-//
-//            } else {
-//                if (aaBuilder.length() != 0) {
-//                    aaBuilder.append("\n");
-//                }
-//                aaBuilder.append(aminoSequentieString.replace("", "  "));
-//
-////                    System.out.println(aminoSequentieString);
-////                    aaPaneDoc.insertString(aaPaneDoc.getLength(), aminoSequentieString + "\n", null);
-//            }
-//        }
-//        aaOrigineleSequentieTextPane.setText(aaBuilder.toString());
-//        aaComplementSequentieTextPane.setText(aaComplementBuilder.toString());
+//    public AminoVoorspeller(DNASequence dnaSequentie) {
+//        this.aminoSequenties = bepaalPerFrameAminos(dnaSequentie);
+//        this.aminoStrings = bepaaPerFramelAminosString(dnaSequentie);
 //
 //    }
+    public static LinkedHashMap<Frame, ProteinSequence> bepaalPerFrameAminos(DNASequence dnaSequentie) {
+        LinkedHashMap<Frame, ProteinSequence> aminos = new LinkedHashMap<Frame, ProteinSequence>(6);
+        ProteinSequence aminoSequentie;
+
+        for (Frame readingFrame : Frame.getAllFrames()) {
+            aminoSequentie = bepaalAminos(readingFrame, dnaSequentie);
+            aminos.put(readingFrame, aminoSequentie);
+        }
+        return aminos;
+    }
+
+    public static ProteinSequence bepaalAminos(Frame readingFrame, DNASequence dnaSequentie) {
+        RNASequence rnaSequentie;
+        ProteinSequence aminoSequentie;
+
+        rnaSequentie = dnaSequentie.getRNASequence(readingFrame);
+        aminoSequentie = rnaSequentie.getProteinSequence();
+        return aminoSequentie;
+    }
+
+    public static LinkedHashMap<Frame, String> bepaaPerFramelAminosString(DNASequence dnaSequentie) {
+        LinkedHashMap<Frame, String> aminos = new LinkedHashMap<Frame, String>(6);
+        ProteinSequence aminoSequentie;
+        String aminoSequentieString;
+
+        for (Frame readingFrame : Frame.getAllFrames()) {
+            aminoSequentie = bepaalAminos(readingFrame, dnaSequentie);
+            aminoSequentieString = aminoSequentie.getSequenceAsString();
+            aminos.put(readingFrame, aminoSequentieString);
+        }
+        return aminos;
+    }
 //naar amino voorspeller class?
+
     public String getAllAminoSequenties() {
         DNASequence dnaSequentie;
         HashMap<Frame, String> aminoSequenties;
@@ -132,23 +124,20 @@ public class Visualisator {
             frame = frameSequentie.getKey();
             aminoSequentieString = frameSequentie.getValue();
 
-             aminoSequentieInFrame = bepaalFrames(frame,aminoSequentieString);
+            aminoSequentieInFrame = bepaalFrames(frame, aminoSequentieString);
             //nog fixen dat de frames in goede volgorde appended worden (cases)?
-            if (frame.toString().startsWith("REVERSED")) {
-                System.out.println("Reverse frame skipped");
-
-            } else {
+            if (!frame.toString().startsWith("REVERSED")) {
                 if (aaBuilder.length() != 0) {
                     aaBuilder.append("\n");
                 }
                 aaBuilder.append(aminoSequentieInFrame);
+
             }
         }
 
         return aaBuilder.toString();
 
     }
-    //naar amino voorspeller class?
 
     public String getReverseAminoSequenties() {
         DNASequence dnaSequentie;
@@ -166,18 +155,17 @@ public class Visualisator {
 
             frame = frameSequentie.getKey();
             aminoSequentieString = frameSequentie.getValue();
-            
-            aminoSequentieInFrame = bepaalFrames(frame,aminoSequentieString);
+
+            aminoSequentieInFrame = bepaalFrames(frame, aminoSequentieString);
             //nog fixen dat de frames in goede volgorde appended worden (cases)?
             if (frame.toString().startsWith("REVERSED")) {
-                if (aaComplementBuilder.length() != 0) {
-                    aaComplementBuilder.append("\n");
+                if (aaComplementBuilder.length() == 0) {
+                    aaComplementBuilder.append(aminoSequentieInFrame);
 
+                } else {
+                    aaComplementBuilder.insert(0,aminoSequentieInFrame + "\n");
                 }
-                aaComplementBuilder.append(aminoSequentieInFrame);
 
-            } else {
-                System.out.println("Forward frame skipped");
             }
         }
 
@@ -185,12 +173,11 @@ public class Visualisator {
 
     }
 
-    //gebruik voor aa sequenties
     public String bepaalFrames(Frame readingFrame, String aaSequentie) {
         StringBuilder aaBuilder = new StringBuilder();
         aaSequentie = aaSequentie.replace("", "  ").trim();
         switch (readingFrame) {
-            
+
             case ONE:
                 aaBuilder.append(aaSequentie);
                 break;
@@ -222,39 +209,5 @@ public class Visualisator {
         return aaBuilder.toString();
     }
 
-//    public void toonORFs(FASTASequentie ingeladenSequentie) {
-//        int orfStart;
-//        int orfEind;
-//
-//        ArrayList<ORF> gevondenORFs = new ArrayList<>();
-//        ORFSearcher orfFinder = new ORFSearcher(ingeladenSequentie);
-//
-//        gevondenORFs = orfFinder.getORFLijst();
-//        for (ORF orfMatch : gevondenORFs) {
-//
-//            try {
-//
-//                orfStart = orfMatch.getStartPos();
-//                orfEind = orfMatch.getEindPos();
-//                highlight(orfStart, orfEind);
-//            }  (BadLocationException ex) {
-//             ex.printStackTrace();
-//            }
-//        }
-//
-//    }
-    public static void highlight(int beginPositie, int eindPositie, JTextPane highlightPane) throws BadLocationException {
-        Highlighter.HighlightPainter painter;
-        Highlighter highlight;
-
-        painter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
-        highlight = highlightPane.getHighlighter();
-        highlight.addHighlight(beginPositie, eindPositie, painter);
-
-    }
-    
-    public void visualiseerORFs(){
-        
-    }
 
 }

@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.groep11.orfvoorspeller.sqlverbinding;
 
+import com.groep11.orfvoorspeller.sqlverbinding.OngelijkAantalKolommenException;
+import com.groep11.orfvoorspeller.sqlverbinding.DataOpslag;
+import com.groep11.orfvoorspeller.orfstonen.ORF;
+import com.groep11.orfvoorspeller.bestandinladen.FASTASequentie;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -23,9 +27,8 @@ public class SpecifiekeDataOpslag {
         saver = new DataOpslag(GEBRUIKER, WACHTWOORD, DATABASE);
     }
 
-
     //nog checken of waarde al in tabel staat
-    public void saveDNA(FASTASequentie dnaSequentie) throws SQLException, ClassNotFoundException, NullPointerException {
+    public void saveDNA(FASTASequentie dnaSequentie) throws SQLException, ClassNotFoundException, NullPointerException, ArrayIndexOutOfBoundsException, OngelijkAantalKolommenException {
         String header;
         String sequentie;
         String saveQuery;
@@ -43,25 +46,44 @@ public class SpecifiekeDataOpslag {
         dnaAttributen[0] = "titel";
         dnaAttributen[1] = "sequentie";
 
-        
         saveQuery = saver.makeInsertStringQuery("dna", dnaAttributen, dnaData);
 
         saver.execute(saveQuery);
-        saver.close();
+
+        //haal de id van de net geinserte sequentie op en zet deze in de tussentabel
+        
+        
 
     }
 
-    public void saveORFs(ArrayList<ORF> orfs) {
+    public void saveORFs(ArrayList<ORF> orfs) throws ArrayIndexOutOfBoundsException, SQLException, OngelijkAantalKolommenException {
         int startPositie;
         int eindPositie;
         char strand;
+        String saveQuery;
+
+        String[] orfAttributen = new String[3];
+        Object[] orfWaardes = new Object[3];
+
+        orfAttributen[0] = "start";
+        orfAttributen[1] = "eind";
+        orfAttributen[2] = "strand";
 
         for (ORF orf : orfs) {
             startPositie = orf.getStartPos();
             eindPositie = orf.getEindPos();
             strand = orf.getStrand();
 
+            orfWaardes[0] = startPositie;
+            orfWaardes[1] = eindPositie;
+            orfWaardes[2] = strand;
+           
+            saveQuery = saver.makeInsertStringQuery("orfs",orfAttributen,orfWaardes);
+            
+            saver.execute(saveQuery);
+
         }
+        
 
     }
 

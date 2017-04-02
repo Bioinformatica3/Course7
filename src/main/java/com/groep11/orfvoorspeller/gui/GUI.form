@@ -75,9 +75,6 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="AANSCHOUW DE ORF VOORSPELLER"/>
-    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[800, 600]"/>
-    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="MenuBar"/>
@@ -114,7 +111,7 @@
                   <Group type="102" attributes="0">
                       <Component id="headerLabel" max="32767" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="toonORFsButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="vindORFsButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="190" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -131,7 +128,7 @@
               </Group>
               <EmptySpace pref="82" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="toonORFsButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="vindORFsButton" alignment="1" min="-2" max="-2" attributes="0"/>
                   <Component id="headerLabel" alignment="1" min="-2" pref="29" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -186,12 +183,12 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="toonORFsButton">
+    <Component class="javax.swing.JButton" name="vindORFsButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Toon ORFs"/>
+        <Property name="text" type="java.lang.String" value="Vind ORFs"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toonORFsButtonActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="vindORFsButtonActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="dummyUpperScrollPane">

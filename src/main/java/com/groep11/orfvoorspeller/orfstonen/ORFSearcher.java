@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.groep11.orfvoorspeller.orfstonen;
 
+import com.groep11.orfvoorspeller.orfstonen.ORF;
+import com.groep11.orfvoorspeller.bestandinladen.FASTASequentie;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +45,8 @@ public class ORFSearcher {
 
                 orfId++;
                 orfTitel = orfString + Integer.toString(orfId);
+                
+            
                 orfBegin = orfMatches.start();
                 orfEind = orfMatches.end();
 

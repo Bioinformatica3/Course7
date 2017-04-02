@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.groep11.orfvoorspeller.sqlverbinding;
 
 import java.sql.*;
 import java.util.Arrays;
@@ -53,31 +53,38 @@ public class DataOpslag {
         return conn;
     }
 
-    public String makeInsertStringQuery(String tabel, String[] attributen, Object[] waardes) throws SQLException {
-        if (attributen.length != waardes.length) {
-            //throw error dat er even veel waardes als kolommen moeten zijn
+    public String makeInsertStringQuery(String tabel, String[] attributen, Object[] waardes) throws SQLException, OngelijkAantalKolommenException {
+        if (attributen.length == waardes.length) {
+            String waardesAlsQuery;
+            String attributenAlsQuery;
+
+            attributenAlsQuery = Arrays.toString(attributen);
+            //vervang de [ en ] als uiteindes van de array met ( en ) voor sql query
+            attributenAlsQuery = attributenAlsQuery.replace("[", "(").replace("]", ")");
+
+            //vervang de [ en ] als uiteindes van de array met ( en ) en voeg single quotes ' toe rond elke waarde voor sql query
+            waardesAlsQuery = Arrays.toString(waardes);
+            waardesAlsQuery = waardesAlsQuery.replace("[", "('").replace("]", "')");
+            waardesAlsQuery = waardesAlsQuery.replace(",", "','").replace(" ", "");
+
+            String query = INSERT + tabel + SPACE + attributenAlsQuery + WAARDES + waardesAlsQuery;
+
+            System.out.println(query);
+            return query;
+
+        } else {
+            throw new OngelijkAantalKolommenException();
+
         }
-        String waardesAlsQuery;
-        String attributenAlsQuery;
-
-        attributenAlsQuery = Arrays.toString(attributen);
-        //vervang de [ en ] als uiteindes van de array met ( en ) voor sql query
-        attributenAlsQuery = attributenAlsQuery.replace("[", "(").replace("]", ")");
-
-        //vervang de [ en ] als uiteindes van de array met ( en ) en voeg single quotes ' toe rond elke waarde voor sql query
-        waardesAlsQuery = Arrays.toString(waardes);
-        waardesAlsQuery = waardesAlsQuery.replace("[", "('").replace("]", "')");
-        waardesAlsQuery = waardesAlsQuery.replace(",", "','");
-
-        String query = INSERT + tabel + SPACE + attributenAlsQuery + WAARDES + waardesAlsQuery;
-        
-        return query;
     }
 
     public void execute(String query) throws SQLException {
-        this.sqlStatement.execute(query);
-        this.sqlStatement.closeOnCompletion();
+        this.sqlStatement.execute(query, Statement.RETURN_GENERATED_KEYS);
 
+    }
+
+    public ResultSet getPrimaryIds() throws SQLException {
+        return this.sqlStatement.getGeneratedKeys();
     }
 
     public void close() throws SQLException {
