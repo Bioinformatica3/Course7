@@ -7,7 +7,7 @@ package test;
 
 /**
  *
- * @author Koen
+ * @author Koen Meloen
  */
 public class BLASTHit {
     
