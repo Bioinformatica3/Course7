@@ -1,7 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Deze applicatie biedt gebruikers de mogelijkheid om een DNA sequentie (in FASTA formaat) in te laden
+ * en hierin aanwezige ORFs (gedefineerd als een DNA sequentie dat in frame begint met ATG en eindigt met een stop codon)
+ * te vinden,visualiseren en eventueel op te slaan.
+ * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden 
+ * zijn er per functionaliteit (package) wel meer classes en methodes toegevoegd.
+ * 
+ * Ontwikkelaars: Glenn Hulscher, Tijs van Lieshout, Koen van der Heide en Milo van de Griend
+ * Datum laatste versie: 03-04-2017
+ * 
+ * Bekende bugs: 
+ * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
+ * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
+ * 
  */
 package com.groep11.orfvoorspeller.sqlverbinding;
 
@@ -23,11 +33,26 @@ public class SpecifiekeDataOpslag {
     private static final String DATABASE = "jdbc:mysql://localhost:3306/mydb";
     private static DataOpslag saver;
 
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public SpecifiekeDataOpslag() throws SQLException, ClassNotFoundException {
         saver = new DataOpslag(GEBRUIKER, WACHTWOORD, DATABASE);
     }
 
     //nog checken of waarde al in tabel staat
+
+    /**
+     *
+     * @param dnaSequentie
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws NullPointerException
+     * @throws ArrayIndexOutOfBoundsException
+     * @throws OngelijkAantalKolommenException
+     */
     public void saveDNA(FASTASequentie dnaSequentie) throws SQLException, ClassNotFoundException, NullPointerException, ArrayIndexOutOfBoundsException, OngelijkAantalKolommenException {
         String header;
         String sequentie;
@@ -56,6 +81,13 @@ public class SpecifiekeDataOpslag {
 
     }
 
+    /**
+     *
+     * @param orfs
+     * @throws ArrayIndexOutOfBoundsException
+     * @throws SQLException
+     * @throws OngelijkAantalKolommenException
+     */
     public void saveORFs(ArrayList<ORF> orfs) throws ArrayIndexOutOfBoundsException, SQLException, OngelijkAantalKolommenException {
         int startPositie;
         int eindPositie;

@@ -1,7 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Deze applicatie biedt gebruikers de mogelijkheid om een DNA sequentie (in FASTA formaat) in te laden
+ * en hierin aanwezige ORFs (gedefineerd als een DNA sequentie dat in frame begint met ATG en eindigt met een stop codon)
+ * te vinden,visualiseren en eventueel op te slaan.
+ * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden 
+ * zijn er per functionaliteit (package) wel meer classes en methodes toegevoegd.
+ * 
+ * Ontwikkelaars: Glenn Hulscher, Tijs van Lieshout, Koen van der Heide en Milo van de Griend
+ * Datum laatste versie: 03-04-2017
+ * 
+ * Bekende bugs: 
+ * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
+ * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
+ * 
  */
 package com.groep11.orfvoorspeller.gui;
 
@@ -11,15 +21,12 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
-import com.groep11.orfvoorspeller.orfstonen.AminoVoorspeller;
+import com.groep11.orfvoorspeller.bestandinladen.AminoVoorspeller;
 import com.groep11.orfvoorspeller.bestandinladen.FASTASequentie;
 import com.groep11.orfvoorspeller.bestandinladen.FASTASequentieHelper;
 import com.groep11.orfvoorspeller.orfstonen.ORF;
@@ -242,8 +249,8 @@ public class GUI extends javax.swing.JFrame {
 
             AminoVoorspeller aminos = new AminoVoorspeller(fastaSequentie);
             dnaSequentieTextPane.setText(fastaSequentie.getSequentieMetComplementair());
-            aaSequentieTextPaneUpper.setText(aminos.getForwardAminoSequenties());
-            aaSequentieTextPaneLower.setText(aminos.getReverseAminoSequenties());
+            aaSequentieTextPaneUpper.setText(aminos.getForwardAminoSequentiesAlsString());
+            aaSequentieTextPaneLower.setText(aminos.getReverseAminoSequentiesAlsString());
 
 //verbind de scroll bars van de afzonderlijke text panes aan elkaar zodat gebruiker maar in 1 pane hoeft te scrollen
             dummyLowerScrollPane.setHorizontalScrollBar(dummyUpperScrollPane.getHorizontalScrollBar());

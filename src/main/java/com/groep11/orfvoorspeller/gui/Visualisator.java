@@ -1,7 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Deze applicatie biedt gebruikers de mogelijkheid om een DNA sequentie (in FASTA formaat) in te laden
+ * en hierin aanwezige ORFs (gedefineerd als een DNA sequentie dat in frame begint met ATG en eindigt met een stop codon)
+ * te vinden,visualiseren en eventueel op te slaan.
+ * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden 
+ * zijn er per functionaliteit (package) wel meer classes en methodes toegevoegd.
+ * 
+ * Ontwikkelaars: Glenn Hulscher, Tijs van Lieshout, Koen van der Heide en Milo van de Griend
+ * Datum laatste versie: 03-04-2017
+ * 
+ * Bekende bugs: 
+ * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
+ * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
+ * 
  */
 package com.groep11.orfvoorspeller.gui;
 
@@ -9,16 +19,10 @@ import com.groep11.orfvoorspeller.orfstonen.OngeldigeORFException;
 import com.groep11.orfvoorspeller.orfstonen.ORF;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
-import org.biojava.nbio.core.sequence.DNASequence;
-import org.biojava.nbio.core.sequence.transcription.Frame;
 
 /**
  *
@@ -28,11 +32,22 @@ public class Visualisator {
 
     private ArrayList<ORF> gevondenORFs;
 
+    /**
+     *
+     * @param orfs
+     */
     public Visualisator(ArrayList<ORF> orfs) {
         this.gevondenORFs = orfs;
 
     }
 
+    /**
+     *
+     * @param beginPositie
+     * @param eindPositie
+     * @param highlightPane
+     * @throws BadLocationException
+     */
     public static void highlight(int beginPositie, int eindPositie, JTextPane highlightPane) throws BadLocationException {
         Highlighter.HighlightPainter painter;
         Highlighter highlight;
@@ -43,6 +58,13 @@ public class Visualisator {
 
     }
 
+    /**
+     *
+     * @param forwardORFPane
+     * @param reverseORFPane
+     * @throws BadLocationException
+     * @throws OngeldigeORFException
+     */
     public void visualizeOnPanes(JTextPane forwardORFPane, JTextPane reverseORFPane) throws BadLocationException, OngeldigeORFException {
         String[] geheleForwardAminoSeqs;
         String[] geheleReverseAminoSeqs;
@@ -55,11 +77,11 @@ public class Visualisator {
                 case ('+'):
                     visualiseerORFs(orf, forwardORFPane, geheleForwardAminoSeqs);
                     break;
-                    
+
                 case ('-'):
                     visualiseerORFs(orf, reverseORFPane, geheleReverseAminoSeqs);
                     break;
-                    
+
                 default:
                     throw new OngeldigeORFException();
 
@@ -67,94 +89,41 @@ public class Visualisator {
         }
     }
 
+    /**
+     *
+     * @param orf
+     * @param textPane
+     * @param textPaneTekst
+     * @throws BadLocationException
+     * @throws OngeldigeORFException
+     */
     public void visualiseerORFs(ORF orf, JTextPane textPane, String[] textPaneTekst) throws BadLocationException, OngeldigeORFException {
         int orfStart;
         int orfEind;
         int orfFrame;
-        
+
         orfStart = orf.getStartPos();
         orfEind = orf.getEindPos();
-        
+
         orfFrame = orfStart % 3;
-//        if (orfFrame == 0) {
-//            orfFrame = 3; //reading frame 3 geeft bij modulo 3 als uitkomst 0, dit fixt dat
-//        }
 
         for (int i = 0; i < orfFrame; i++) {
             orfStart += textPaneTekst[i].length();
             orfEind += textPaneTekst[i].length();
 
-            
         }
         switch (orf.getStrand()) {
             case '+':
                 highlight(orfStart, orfEind, textPane);
                 break;
-                
+
             case '-':
                 highlight(orfEind, orfStart, textPane);
                 break;
-                
+
             default:
                 throw new OngeldigeORFException();
         }
 
     }
-
-//    public void visualiseerORFs(JTextPane forwardORFPane, JTextPane reverseORFPane) {
-//        String phuck;
-//        String phuck2;
-//
-//        String[] bird;
-//        String[] istheword;
-//
-//        int orfStart;
-//        int orfEind;
-//        int orfFrame;
-//
-//        phuck = forwardORFPane.getText();
-//        phuck2 = reverseORFPane.getText();
-//
-//        bird = phuck.split("\n");
-//        istheword = phuck2.split("\n");
-//
-//        for (ORF orf : gevondenORFs) {
-//            orfStart = orf.getStartPos();
-//            orfEind = orf.getEindPos();
-//            //System.out.println(orfStart + " " + orfEind);
-//            orfFrame = orfStart % 3;
-//            //  System.out.println(orfFrame + " Strand: " + orf.getStrand());
-//            switch (orf.getStrand()) {
-//
-//                case ('+'):
-//                    for (int i = 0; i < orfFrame; i++) {
-//                        orfStart += bird[i].length();
-//                        orfEind += bird[i].length();
-//                    }
-//
-//                    try {
-//                        Visualisator.highlight(orfStart, orfEind, aaSequentieTextPaneUpper);
-//                    } catch (BadLocationException ex) {
-//                        errorPopup("Ongeldige ORF posities gevonden");
-//                    }
-//
-//                    break;
-//
-//                case ('-'):
-//                    //waarom is de visualisatie verkeerd om?
-//                    for (int i = 0; i < orfFrame; i++) {
-//                        orfStart += istheword[i].length();
-//                        orfEind += istheword[i].length();
-//                    }
-//                    try {
-//                        //SEQUENTIE IS IN REVERSE DUS GOTTA TURN AROUND POSITIES
-//                        Visualisator.highlight(orfEind, orfStart, aaSequentieTextPaneLower);
-//                    } catch (BadLocationException ex) {
-//                        errorPopup("Ongeldige ORF posities gevonden");
-//                    }
-//
-//                    break;
-//            }
-//        }
-//    }
 }
