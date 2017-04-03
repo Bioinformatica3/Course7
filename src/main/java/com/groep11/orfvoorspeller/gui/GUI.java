@@ -272,19 +272,17 @@ public class GUI extends javax.swing.JFrame {
 //verbind de scroll bars van de afzonderlijke text panes aan elkaar zodat gebruiker maar in 1 pane hoeft te scrollen
             dummyLowerScrollPane.setHorizontalScrollBar(dummyUpperScrollPane.getHorizontalScrollBar());
             seqScrollPane.setHorizontalScrollBar(dummyLowerScrollPane.getHorizontalScrollBar());
-            
+
             String confirmed = "test.txt";
             InputStream in = new FileInputStream(confirmed);
             AudioStream test = new AudioStream(in);
             AudioPlayer.player.start(test);
+            
             vindORFsButton.setEnabled(true);
-            
-            
 
         } catch (OngeldigBestandException ex) {
             errorPopup("ONGELDIG/GEEN BESTAND GEKOZEN");
         } catch (IOException ex) {
-            ex.printStackTrace();
             errorPopup("FOUT TIJDENS INLEZEN VAN BESTAND");
         } catch (NullPointerException ex) {
             errorPopup("BESTAND IS LEEG");

@@ -35,8 +35,10 @@ public class Visualisator {
     private ArrayList<ORF> gevondenORFs;
 
     /**
+     * Constructor noodzakelijk omdat de ORFs al bekend moeten zijn voordat het
+     * zinvol is om deze class te instantieren.
      *
-     * @param orfs
+     * @param orfs Lijst met alle gevonden ORF objecten.
      */
     public Visualisator(ArrayList<ORF> orfs) {
         this.gevondenORFs = orfs;
@@ -44,11 +46,16 @@ public class Visualisator {
     }
 
     /**
+     * Methode om de highlights werkelijk toe te voegen op een gegeven
+     * textPane,deze methode is statisch omdat het onafhankelijk van de gevonden
+     * ORFs kan functioneren.
      *
-     * @param beginPositie
-     * @param eindPositie
-     * @param highlightPane
-     * @throws BadLocationException
+     * @param beginPositie van de ORF op de gehele sequentie.
+     * @param eindPositie van de ORF op de gehele sequentie.
+     * @param highlightPane TextPane waarop de highlight plaats moet vinden.
+     * @throws BadLocationException Wanneer de locaties van de posities niet te
+     * matchen zijn op de textpane (posities zijn bijvoorbeeld groter dan de
+     * lengte van de String in de textpane)
      */
     public static void highlight(int beginPositie, int eindPositie, JTextPane highlightPane) throws BadLocationException {
         Highlighter.HighlightPainter painter;
@@ -61,11 +68,20 @@ public class Visualisator {
     }
 
     /**
+     * Deze methode haalt de aminozuursequenties op uit de textPanes als
+     * String[] arrays (waarbij elke String 1 aminozuur frame is) en laat de ORF
+     * posities matchen op deze sequenties.
      *
-     * @param forwardORFPane
-     * @param reverseORFPane
-     * @throws BadLocationException
-     * @throws OngeldigeORFException
+     * @param forwardORFPane TextPane dat de forward aminosequenties bevat en
+     * waarop dus de forward ORFs moeten worden gevisualiseerd.
+     * @param reverseORFPane TextPane dat de reverse aminosequenties bevat en
+     * waarop dus de reverse ORFs moeten worden gevisualiseerd.
+     *
+     * @throws BadLocationException Wanneer de locaties van de posities niet te
+     * matchen zijn op de textpane (posities zijn bijvoorbeeld groter dan de
+     * lengte van de String in de textpane)
+     * @throws OngeldigeORFException Mocht een ORF geen strand hebben
+     * meegekregen.
      */
     public void visualizeOnPanes(JTextPane forwardORFPane, JTextPane reverseORFPane) throws BadLocationException, OngeldigeORFException {
         String[] geheleForwardAminoSeqs;
@@ -76,11 +92,11 @@ public class Visualisator {
 
         for (ORF orf : gevondenORFs) {
             switch (orf.getStrand()) {
-                case ('+'):
+                case ('+'): //forward strands
                     visualiseerORFs(orf, forwardORFPane, geheleForwardAminoSeqs);
                     break;
 
-                case ('-'):
+                case ('-'): //reverse strands
                     visualiseerORFs(orf, reverseORFPane, geheleReverseAminoSeqs);
                     break;
 
@@ -92,12 +108,19 @@ public class Visualisator {
     }
 
     /**
+     * Deze methode matcht de ORF posities met de posities in de textPane en
+     * laat deze highlighten door de highlight methode.
      *
-     * @param orf
-     * @param textPane
-     * @param textPaneTekst
-     * @throws BadLocationException
-     * @throws OngeldigeORFException
+     * @param orf de ORF die gehighlight moet worden.
+     * @param textPane TextPane waarop het highlighten plaatsvindt.
+     * @param textPaneTekst de tekst (iedere regel gesplitst tot een String[])
+     * van de textPane
+     *
+     * @throws BadLocationException Wanneer de locaties van de posities niet te
+     * matchen zijn op de textpane (posities zijn bijvoorbeeld groter dan de
+     * lengte van de String in de textpane)
+     * @throws OngeldigeORFException Mocht een ORF geen strand hebben
+     * meegekregen.
      */
     public void visualiseerORFs(ORF orf, JTextPane textPane, String[] textPaneTekst) throws BadLocationException, OngeldigeORFException {
         int orfStart;
@@ -109,6 +132,8 @@ public class Visualisator {
 
         orfFrame = orfStart % 3;
 
+        //Omdat alle 3 de sequenties in feite 1 lange String zijn in de textpane moeten de posities van ORFs
+        //aangepast worden afhankelijk van hun frame.
         for (int i = 0; i < orfFrame; i++) {
             orfStart += textPaneTekst[i].length();
             orfEind += textPaneTekst[i].length();

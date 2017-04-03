@@ -16,7 +16,7 @@
 package com.groep11.orfvoorspeller.uitvoerenblast;
 
 /**
- *
+ * NIET FUNCTIONEEL
  * @author Koen
  */
 public class BLASTHit {

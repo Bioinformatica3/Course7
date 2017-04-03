@@ -2,16 +2,16 @@
  * Deze applicatie biedt gebruikers de mogelijkheid om een DNA sequentie (in FASTA formaat) in te laden
  * en hierin aanwezige ORFs (gedefineerd als een DNA sequentie dat in frame begint met ATG en eindigt met een stop codon)
  * te vinden,visualiseren en eventueel op te slaan.
- * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden 
+ * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden
  * zijn er per functionaliteit (package) wel meer classes en methodes toegevoegd.
- * 
+ *
  * Ontwikkelaars: Glenn Hulscher, Tijs van Lieshout, Koen van der Heide en Milo van de Griend
  * Datum laatste versie: 03-04-2017
- * 
- * Bekende bugs: 
+ *
+ * Bekende bugs:
  * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
  * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
- * 
+ *
  */
 package com.groep11.orfvoorspeller.orfstonen;
 
@@ -19,6 +19,9 @@ import com.groep11.orfvoorspeller.bestandinladen.FASTASequentie;
 import org.biojava.nbio.core.sequence.DNASequence;
 
 /**
+ * De data van een ORF kan worden opgeslagen als instantie van deze class.
+ * Overerft de FASTASequentie class aangezien ORFs in deze context feitelijk
+ * kleinere FASTA DNA sequenties zijn.
  *
  * @author Koen
  */
@@ -30,12 +33,14 @@ public class ORF extends FASTASequentie {
     private char strand;
 
     /**
+     * Constructor van een ORF, het is dus verplicht dat een ORF aangemaakt
+     * wordt met titel,sequentie, posities en strands.
      *
-     * @param orfTitel
-     * @param inputSequentie
-     * @param startPositie
-     * @param eindPositie
-     * @param dnaStrand
+     * @param orfTitel titel van de ORF.
+     * @param inputSequentie DNA sequentie van de ORF.
+     * @param startPositie start positie van de ORF op de gehele DNA sequentie.
+     * @param eindPositie eind positie van de ORF op de gehele DNA sequentie.
+     * @param dnaStrand strand waarop de ORF zich bevindt (+ of -).
      */
     public ORF(String orfTitel, DNASequence inputSequentie, int startPositie, int eindPositie, char dnaStrand) {
         super(orfTitel, inputSequentie);
@@ -48,7 +53,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * Methode die het aantal ORFs in de input sequentie retourneert.
+     * Methode die het totaal aantal ORFs die zijn aangemaakt retourneert.
      */
     public static int getAantalORFs() {
         return aantalORFs;
@@ -56,7 +61,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * Methode die de startpositie van het ORF retourneert.
+     * Methode die de startpositie van het ORF op de gehele DNA sequentie retourneert.
      */
     public int getStartPos() {
         return startPos;
@@ -64,7 +69,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * Methode die de startpositie in een instance variable opslaat.
+     * Methode om de startpositie van de ORF aan te passen.
      */
     public void setStartPos(int startPositie) {
         this.startPos = startPositie;
@@ -72,7 +77,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * Methode die de eindpositie retourneert.
+     * Methode die de eindpositie van de ORF op de gehele DNA sequentie retourneert.
      */
     public int getEindPos() {
         return eindPos;
@@ -80,7 +85,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * Methode die de eindpositie in een instance variable opslaat.
+     * Methode om de eindpositie van de ORF aan te passen.
      */
     public void setEindPos(int eindPositie) {
         this.eindPos = eindPositie;
@@ -88,7 +93,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * Methode die de bijbehorende strand opvraagt.
+     * Methode die de bijbehorende strand van de ORF opvraagt.
      */
     public char getStrand() {
         return strand;
@@ -96,18 +101,17 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * Methode die de strand opslaat in een instance variable.
+     * Methode om de strand van een ORF te veranderen.
      */
     public void setStrand(char newStrand) {
         this.strand = newStrand;
     }
-    
+
     /**
      *
-     * Override van de toString() methode om het object retourneerbaar te maken als 
-     * string (met duidelijke eigenschappen, ten opzichte van een object reference).
-     */ 
-
+     * Override van de toString() methode om het object retourneerbaar te maken
+     * als een leesbare String (met de variabelen duidelijk aangegeven).
+     */
     @Override
     public String toString() {
         return "ORF{" + "titel= " + super.getTitel() + "start positie= " + startPos + ", eind positie= " + eindPos + ", strand= " + strand + '}';

@@ -2,16 +2,16 @@
  * Deze applicatie biedt gebruikers de mogelijkheid om een DNA sequentie (in FASTA formaat) in te laden
  * en hierin aanwezige ORFs (gedefineerd als een DNA sequentie dat in frame begint met ATG en eindigt met een stop codon)
  * te vinden,visualiseren en eventueel op te slaan.
- * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden 
+ * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden
  * zijn er per functionaliteit (package) wel meer classes en methodes toegevoegd.
- * 
+ *
  * Ontwikkelaars: Glenn Hulscher, Tijs van Lieshout, Koen van der Heide en Milo van de Griend
  * Datum laatste versie: 03-04-2017
- * 
- * Bekende bugs: 
+ *
+ * Bekende bugs:
  * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
  * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
- * 
+ *
  */
 package com.groep11.orfvoorspeller.orfstonen;
 
@@ -23,6 +23,8 @@ import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
 
 /**
+ * Bevat de logica om naar ORFs te zoeken in een DNA sequentie en deze op te
+ * slaan in een lijst als ORF class objecten.
  *
  * @author Koen
  */
@@ -33,11 +35,15 @@ public class ORFSearcher {
     private ArrayList<ORF> orfLijst = new ArrayList<>();
 
     /**
+     * Zoekt ORFs in een gegeven FASTA sequentie (de bijbehorende DNA sequentie
+     * wordt uit de FASTA sequentie gehaald).
      *
-     * @param dnaSequentie
-     * @throws CompoundNotFoundException
+     * @param fastaSequentie FASTA sequentie waarvan de DNA sequentie als basis
+     * gebruikt wordt om ORFs in te zoeken.
+     * @throws CompoundNotFoundException wanneer de DNA sequentie ongeldige
+     * karakters bevat.
      */
-    public void vindORFs(FASTASequentie dnaSequentie) throws CompoundNotFoundException {
+    public void vindORFs(FASTASequentie fastaSequentie) throws CompoundNotFoundException {
         Matcher orfMatches;
         String[] dnaStrings = new String[2];
         String orfTitel = "";
@@ -50,8 +56,8 @@ public class ORFSearcher {
 
         int strandCounter = 0;
 
-        dnaStrings[0] = dnaSequentie.getSequentie().getSequenceAsString();
-        dnaStrings[1] = dnaSequentie.getSequentie().getReverseComplement().getSequenceAsString();
+        dnaStrings[0] = fastaSequentie.getSequentie().getSequenceAsString();
+        dnaStrings[1] = fastaSequentie.getSequentie().getReverseComplement().getSequenceAsString();
 
         for (String dnaString : dnaStrings) {
             orfMatches = ORFPATROON.matcher(dnaString);
@@ -59,11 +65,10 @@ public class ORFSearcher {
 
                 orfId++;
                 orfTitel = orfString + Integer.toString(orfId);
-                
-            
+
                 orfBegin = orfMatches.start();
                 orfEind = orfMatches.end();
-                
+
                 //forward strand is eerste string (0), reverse tweede (1)
                 switch (strandCounter) {
                     case (0):
@@ -92,16 +97,18 @@ public class ORFSearcher {
     }
 
     /**
+     * Retouneert de lijst met alle ORF objecten.
      *
-     * @return
+     * @return de lijst gevuld met alle gevonden ORF objecten.
      */
     public ArrayList<ORF> getORFLijst() {
         return this.orfLijst;
     }
 
     /**
+     * Set een nieuwe lijst met ORF objecten.
      *
-     * @param newORFs
+     * @param newORFs de nieuwe lijst met ORF objecten.
      */
     public void setORFLijst(ArrayList<ORF> newORFs) {
         this.orfLijst = newORFs;
