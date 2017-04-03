@@ -48,7 +48,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * @return
+     * Methode die het aantal ORFs in de input sequentie retourneert.
      */
     public static int getAantalORFs() {
         return aantalORFs;
@@ -56,7 +56,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * @return
+     * Methode die de startpositie van het ORF retourneert.
      */
     public int getStartPos() {
         return startPos;
@@ -64,7 +64,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * @param startPositie
+     * Methode die de startpositie in een instance variable opslaat.
      */
     public void setStartPos(int startPositie) {
         this.startPos = startPositie;
@@ -72,7 +72,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * @return
+     * Methode die de eindpositie retourneert.
      */
     public int getEindPos() {
         return eindPos;
@@ -80,7 +80,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * @param eindPositie
+     * Methode die de eindpositie in een instance variable opslaat.
      */
     public void setEindPos(int eindPositie) {
         this.eindPos = eindPositie;
@@ -88,7 +88,7 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * @return
+     * Methode die de bijbehorende strand opvraagt.
      */
     public char getStrand() {
         return strand;
@@ -96,11 +96,17 @@ public class ORF extends FASTASequentie {
 
     /**
      *
-     * @param newStrand
+     * Methode die de strand opslaat in een instance variable.
      */
     public void setStrand(char newStrand) {
         this.strand = newStrand;
     }
+    
+    /**
+     *
+     * Override van de toString() methode om het object retourneerbaar te maken als 
+     * string (met duidelijke eigenschappen, ten opzichte van een object reference).
+     */ 
 
     @Override
     public String toString() {
