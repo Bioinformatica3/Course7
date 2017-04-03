@@ -13,7 +13,7 @@
  * Bekende bugs:
  * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
  * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
- * - BLAST functionaliteit mist nog.
+ * 
  *
  */
 package com.groep11.orfvoorspeller.bestandinladen;
@@ -30,6 +30,9 @@ import org.biojava.nbio.core.sequence.transcription.Frame;
  * Deze class is verantwoordelijk voor het omzetten een gegeven DNA sequentie
  * naar een aminozuursequentie, hierbij kan de aminozuursequentie voor een
  * specifiek frame worden bepaald of voor alle frames tegelijk.
+ *
+ * De drie getXAminoSequentiesAlsString methodes overlappen veel qua code, dit
+ * is zo gehouden om het verschil in deze methodes duidelijk te houden
  *
  * @author Koen
  */
@@ -136,7 +139,7 @@ public class AminoVoorspeller {
      * @return LinkedHashMap met reading frame als key en aminozuursequentie als
      * String object als value.
      */
-    public LinkedHashMap<Frame, String> bepaaPerFrameAminosString() {
+    public LinkedHashMap<Frame, String> bepaalPerFrameAminosString() {
         LinkedHashMap<Frame, String> aminos = new LinkedHashMap<Frame, String>(6);
         ProteinSequence aminoSequentie;
         String aminoSequentieString;
@@ -163,7 +166,7 @@ public class AminoVoorspeller {
         StringBuilder aaBuilder = new StringBuilder();
         StringBuilder aaComplementBuilder = new StringBuilder();
 
-        aminoSequenties = bepaaPerFrameAminosString();
+        aminoSequenties = bepaalPerFrameAminosString();
 
         for (Map.Entry<Frame, String> frameSequentie : aminoSequenties.entrySet()) {
 
@@ -205,7 +208,7 @@ public class AminoVoorspeller {
         String aminoSequentieInFrame;
         StringBuilder aaBuilder = new StringBuilder();
 
-        aminoSequenties = bepaaPerFrameAminosString();
+        aminoSequenties = bepaalPerFrameAminosString();
 
         for (Map.Entry<Frame, String> frameSequentie : aminoSequenties.entrySet()) {
 
@@ -243,7 +246,7 @@ public class AminoVoorspeller {
 
         StringBuilder aaComplementBuilder = new StringBuilder();
 
-        aminoSequenties = bepaaPerFrameAminosString();
+        aminoSequenties = bepaalPerFrameAminosString();
 
         for (Map.Entry<Frame, String> frameSequentie : aminoSequenties.entrySet()) {
 

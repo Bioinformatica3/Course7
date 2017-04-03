@@ -19,7 +19,7 @@ import java.sql.*;
 import java.util.Arrays;
 
 /**
- *
+ * Generieke class dat queries maakt 
  * @author Koen
  */
 public class DataOpslag {
@@ -105,7 +105,7 @@ public class DataOpslag {
 
             String query = INSERT + tabel + SPACE + attributenAlsQuery + WAARDES + waardesAlsQuery;
 
-            System.out.println(query);
+            //System.out.println(query);
             return query;
 
         } else {

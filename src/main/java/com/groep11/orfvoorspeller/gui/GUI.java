@@ -38,8 +38,15 @@ import com.groep11.orfvoorspeller.bestandinladen.OngeldigBestandException;
 import com.groep11.orfvoorspeller.orfstonen.OngeldigeORFException;
 import com.groep11.orfvoorspeller.sqlverbinding.OngelijkAantalKolommenException;
 import com.groep11.orfvoorspeller.sqlverbinding.SpecifiekeDataOpslag;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 /**
+ * De GUI class met alle noodzakelijke GUI elementen, niet alle onderdelen zijn
+ * al verbonden met de noodzakelijke logica, zo kan een sequentie nog niet
+ * lokaal worden opgeslagen
  *
  * @author Koen
  */
@@ -52,7 +59,8 @@ public class GUI extends javax.swing.JFrame {
     private SpecifiekeDataOpslag opslag;
 
     /**
-     * Creates new form GUI
+     * Maak instantie van de GUI en disable de vind ORFs knop (deze wordt pas
+     * enabled wanneer er werkelijk een sequentie is ingeladen).
      */
     public GUI() {
         initComponents();
@@ -233,7 +241,14 @@ public class GUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+/**
+     * Wanneer gebruiker klikt op "Open" wordt deze methode aangeroepen, de
+     * tekst in het tekstfield linksboven wordt ingelezen om de FASTA file waar
+     * dit naar wijst te laden. De FASTA data in de file wordt opgeslagen en
+     * getoond in de GUI.
+     *
+     * @param evt gebruiker klikt knop.
+     */
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         try {
             String filePad;
@@ -244,8 +259,7 @@ public class GUI extends javax.swing.JFrame {
             filePad = padTextField.getText();
             fastaFile = new File(filePad);
 
-            BestandOpener opener = new BestandOpener();
-            ingeladenSequentie = opener.openDNABestand(fastaFile);
+            ingeladenSequentie = BestandOpener.openDNABestand(fastaFile);
 
             fastaSequentie = FASTASequentieHelper.saveFASTASequentie(ingeladenSequentie);
             headerLabel.setText(fastaSequentie.getTitel());
@@ -258,18 +272,30 @@ public class GUI extends javax.swing.JFrame {
 //verbind de scroll bars van de afzonderlijke text panes aan elkaar zodat gebruiker maar in 1 pane hoeft te scrollen
             dummyLowerScrollPane.setHorizontalScrollBar(dummyUpperScrollPane.getHorizontalScrollBar());
             seqScrollPane.setHorizontalScrollBar(dummyLowerScrollPane.getHorizontalScrollBar());
-
+            
+            String confirmed = "test.txt";
+            InputStream in = new FileInputStream(confirmed);
+            AudioStream test = new AudioStream(in);
+            AudioPlayer.player.start(test);
             vindORFsButton.setEnabled(true);
+            
+            
 
         } catch (OngeldigBestandException ex) {
             errorPopup("ONGELDIG/GEEN BESTAND GEKOZEN");
         } catch (IOException ex) {
+            ex.printStackTrace();
             errorPopup("FOUT TIJDENS INLEZEN VAN BESTAND");
         } catch (NullPointerException ex) {
             errorPopup("BESTAND IS LEEG");
         }
     }//GEN-LAST:event_openButtonActionPerformed
-
+    /**
+     * Methode aangeroepen wanneer gebruiker op File -> Browse klikt, roept de
+     * bestand browser aan en zet het filepad in de textfield.
+     *
+     * @param evt gebruiker selecteert menu item.
+     */
     private void browseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseMenuItemActionPerformed
         BestandKiezer browser = new BestandKiezer();
         try {
@@ -279,7 +305,13 @@ public class GUI extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_browseMenuItemActionPerformed
-
+    /**
+     * Aangeroepen wanneer gebruiker op Export to DB -> ORFs klikt. Checkt of er
+     * al een DNA sequentie is opgeslagen, zo ja dan laat deze methode de
+     * gevonden ORFs opslaan in de MySQL DB.
+     *
+     * @param evt gebruiker selecteert het item.
+     */
     private void exportOrfsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportOrfsMenuItemActionPerformed
         if (dnaSaved == false) {
             errorPopup("Moet eerst de DNA sequentie opslaan voordat de bijbehorende ORFs kunnen worden opgeslagen!");
@@ -287,17 +319,22 @@ public class GUI extends javax.swing.JFrame {
             try {
                 opslag.saveORFs(gevondenORFs);
             } catch (ArrayIndexOutOfBoundsException ex) {
-                ex.printStackTrace();
-
+                errorPopup("LEGE LIJST GEVONDEN");
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                errorPopup("SQL ERROR");
             } catch (OngelijkAantalKolommenException ex) {
-                ex.printStackTrace();
+                errorPopup("ONGELIJKE LENGTE ATTRIBUTEN/WAARDES VOOR SQL INSERT");
             }
         }
 
     }//GEN-LAST:event_exportOrfsMenuItemActionPerformed
-
+    /**
+     * Wordt aangeroepen als gebruiker op "Vind ORFs" klikt. Laat de ORFs
+     * opzoeken en deze visualiseren op de textPanes die de aminozuursequenties
+     * bevatten.
+     *
+     * @param evt gebruiker klikt knop.
+     */
     private void vindORFsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vindORFsButtonActionPerformed
         ORFSearcher orfFinder = new ORFSearcher();
 
@@ -307,17 +344,23 @@ public class GUI extends javax.swing.JFrame {
             Visualisator visualisatie = new Visualisator(gevondenORFs);
             visualisatie.visualizeOnPanes(aaSequentieTextPaneUpper, aaSequentieTextPaneLower);
 
-        } catch (CompoundNotFoundException ex) { //FIX DIT
-            ex.printStackTrace();
+        } catch (CompoundNotFoundException ex) {
+            errorPopup("FOUT IN DNA SEQUENTIE");
         } catch (BadLocationException ex) {
-            ex.printStackTrace();
+            errorPopup("SQL ERROR");
         } catch (OngeldigeORFException ex) {
-            ex.printStackTrace();
+            errorPopup("ONGELIJKE LENGTE ATTRIBUTEN/WAARDES VOOR SQL INSERT");
         }
 
 
     }//GEN-LAST:event_vindORFsButtonActionPerformed
-
+    /**
+     * Wordt aangeroepen als gebruiker Export to DB -> Full DNA Seq klikt. Laat
+     * de gehele ingeladen FASTA sequentie (DNA sequentie met FASTA titel)
+     * opslaan in de MySQL DB.
+     *
+     * @param evt gebruiker selecteert het item.
+     */
     private void exportDnaMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportDnaMenuItemActionPerformed
         try {
             opslag = new SpecifiekeDataOpslag();
@@ -325,9 +368,9 @@ public class GUI extends javax.swing.JFrame {
             dnaSaved = true;
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            errorPopup("SQL ERROR");
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+            errorPopup("SQL DRIVER ERROR");
         } catch (NullPointerException ex) {
             errorPopup("GEEN DNA SEQUENTIE GEVONDEN OM IN TE LADEN");
         } catch (OngelijkAantalKolommenException ex) {
