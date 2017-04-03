@@ -13,7 +13,7 @@
  * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
  *
  */
-package com.groep11.orfvoorspeller.sqlverbinding;
+package com.groep11.orfvoorspeller.dataopslag;
 
 import java.sql.*;
 import java.util.Arrays;
