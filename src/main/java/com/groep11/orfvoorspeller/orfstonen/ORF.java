@@ -54,6 +54,7 @@ public class ORF extends FASTASequentie {
     /**
      *
      * Methode die het totaal aantal ORFs die zijn aangemaakt retourneert.
+     * @return het aantal ORFs.
      */
     public static int getAantalORFs() {
         return aantalORFs;
@@ -62,6 +63,7 @@ public class ORF extends FASTASequentie {
     /**
      *
      * Methode die de startpositie van het ORF op de gehele DNA sequentie retourneert.
+     * @return de ORF startpositie.
      */
     public int getStartPos() {
         return startPos;
@@ -70,6 +72,7 @@ public class ORF extends FASTASequentie {
     /**
      *
      * Methode om de startpositie van de ORF aan te passen.
+     * @param startPositie de nieuwe startpositie.
      */
     public void setStartPos(int startPositie) {
         this.startPos = startPositie;
@@ -78,6 +81,7 @@ public class ORF extends FASTASequentie {
     /**
      *
      * Methode die de eindpositie van de ORF op de gehele DNA sequentie retourneert.
+     * @return de ORF eindpositie.
      */
     public int getEindPos() {
         return eindPos;
@@ -86,6 +90,7 @@ public class ORF extends FASTASequentie {
     /**
      *
      * Methode om de eindpositie van de ORF aan te passen.
+     * @param eindPositie de nieuwe eindpositie.
      */
     public void setEindPos(int eindPositie) {
         this.eindPos = eindPositie;
@@ -94,6 +99,7 @@ public class ORF extends FASTASequentie {
     /**
      *
      * Methode die de bijbehorende strand van de ORF opvraagt.
+     * @return de ORF strand.
      */
     public char getStrand() {
         return strand;
@@ -102,6 +108,7 @@ public class ORF extends FASTASequentie {
     /**
      *
      * Methode om de strand van een ORF te veranderen.
+     * @param newStrand de nieuwe strand.
      */
     public void setStrand(char newStrand) {
         this.strand = newStrand;
