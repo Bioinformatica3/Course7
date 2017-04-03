@@ -2,16 +2,16 @@
  * Deze applicatie biedt gebruikers de mogelijkheid om een DNA sequentie (in FASTA formaat) in te laden
  * en hierin aanwezige ORFs (gedefineerd als een DNA sequentie dat in frame begint met ATG en eindigt met een stop codon)
  * te vinden,visualiseren en eventueel op te slaan.
- * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden 
+ * Deze applicatie volgt in grote lijnen het ontwerp, om de code overzichtelijker te houden
  * zijn er per functionaliteit (package) wel meer classes en methodes toegevoegd.
- * 
+ *
  * Ontwikkelaars: Glenn Hulscher, Tijs van Lieshout, Koen van der Heide en Milo van de Griend
  * Datum laatste versie: 03-04-2017
- * 
- * Bekende bugs: 
+ *
+ * Bekende bugs:
  * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
  * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
- * 
+ *
  */
 package com.groep11.orfvoorspeller.bestandinladen;
 
@@ -20,6 +20,9 @@ import java.util.Objects;
 import org.biojava.nbio.core.sequence.DNASequence;
 
 /**
+ * Entries in een DNA FASTA bestand kunnen worden opgeslagen als instanties van
+ * deze class, hierbij worden de FASTA header en bijbehorende DNA sequentie
+ * opgeslagen.
  *
  * @author Koen
  */
@@ -29,9 +32,9 @@ public class FASTASequentie {
     private String dnaTitel;
 
     /**
-     *
-     * @param inputTitel
-     * @param inputSequentie
+     * Constructor van de FASTASequentie, FASTA titel en sequentie worden hier apart meegegeven.
+     * @param inputTitel De FASTA titel (header).
+     * @param inputSequentie De DNA sequentie behorende bij de titel.
      */
     public FASTASequentie(String inputTitel, DNASequence inputSequentie) {
         this.dnaTitel = inputTitel;
@@ -40,8 +43,8 @@ public class FASTASequentie {
     }
 
     /**
-     *
-     * @param inputSequentie
+     * Constructor van de FASTASequentie, FASTA titel en sequentie worden hier samen als een Map Entry meegegeven.
+     * @param inputSequentie Map Entry waarbij de key de FASTA titel is en value de bijbehorende DNA sequentie.
      */
     public FASTASequentie(Entry<String, DNASequence> inputSequentie) {
         this.dnaTitel = inputSequentie.getKey();
@@ -50,48 +53,48 @@ public class FASTASequentie {
     }
 
     /**
-     *
-     * @param newTitel
+     * Verander de FASTA titel (header).
+     * @param newTitel de nieuwe FASTA titel (header).
      */
     public void setTitel(String newTitel) {
         this.dnaTitel = newTitel;
     }
 
     /**
-     *
-     * @return
+     * Retouneert de FASTA titel.
+     * @return de FASTA titel als String.
      */
     public String getTitel() {
         return this.dnaTitel;
     }
 
     /**
-     *
-     * @param newSequentie
+     * Verander de DNA sequentie.
+     * @param newSequentie de nieuwe DNA sequentie.
      */
     public void setSequentie(DNASequence newSequentie) {
         this.dnaSequentie = newSequentie;
     }
 
     /**
-     *
-     * @return
+     * Retouneert de DNA sequentie.
+     * @return de DNA sequentie.
      */
     public DNASequence getSequentie() {
         return this.dnaSequentie;
     }
 
     /**
-     *
-     * @return
+     * Retouneert de DNA sequentie als String.
+     * @return de DNA sequentie als een String.
      */
     public String getSequentieString() {
         return this.dnaSequentie.getSequenceAsString();
     }
 
     /**
-     *
-     * @return
+     * Retouneert de DNA sequentie inclusief de complementaire sequentie als String.
+     * @return de DNA sequentie met complementaire sequentie als String.
      */
     public String getSequentieMetComplementair() {
         return this.dnaSequentie.getSequenceAsString() + "\n" + this.dnaSequentie.getComplement().getSequenceAsString();

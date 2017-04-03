@@ -13,6 +13,7 @@
  * Bekende bugs:
  * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
  * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
+ * - BLAST functionaliteit mist nog.
  *
  */
 package com.groep11.orfvoorspeller.bestandinladen;
