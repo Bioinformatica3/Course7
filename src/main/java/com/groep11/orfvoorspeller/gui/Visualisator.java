@@ -133,19 +133,19 @@ public class Visualisator {
         orfFrame = orfStart % 3;
 
         //Omdat alle 3 de sequenties in feite 1 lange String zijn in de textpane moeten de posities van ORFs
-        //aangepast worden afhankelijk van hun frame.
+        //op deze string aangepast worden afhankelijk van hun reading frame.
         for (int i = 0; i < orfFrame; i++) {
             orfStart += textPaneTekst[i].length();
             orfEind += textPaneTekst[i].length();
 
         }
-        switch (orf.getStrand()) {
+        switch (orf.getStrand()) {// + is een positieve/forward ORF en - een negatieve/reverse
             case '+':
                 highlight(orfStart, orfEind, textPane);
                 break;
 
             case '-':
-                highlight(orfEind, orfStart, textPane);
+                highlight(orfEind, orfStart, textPane); //negatieve ORFs tellen vanaf hun eindpositie tot hun start (zijn inverted)
                 break;
 
             default:

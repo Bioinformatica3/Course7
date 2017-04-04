@@ -13,7 +13,7 @@
  * Bekende bugs:
  * - ORFs worden in de database nog niet verbonden aan de DNA sequentie.
  * - Als de FASTA file meerdere sequenties bevat wordt alleen de eerste sequentie hier verwerkt.
- * 
+ *
  *
  */
 package com.groep11.orfvoorspeller.bestandinladen;
@@ -154,7 +154,8 @@ public class AminoVoorspeller {
 
     /**
      * Roept de bepaalPerFrameAminosString methode aan en zet alle
-     * aminozuursequenties achter elkaar tot 1 lange String.
+     * aminozuursequenties achter elkaar tot 1 lange String (met iedere
+     * aminozuursequentie als een nieuwe regel).
      *
      * @return alle aminozuursequenties als 1 samengevoegde String.
      */
@@ -174,14 +175,14 @@ public class AminoVoorspeller {
             aminoSequentieString = frameSequentie.getValue();
 
             if (frame.toString().startsWith("REVERSED")) {
-                if (aaComplementBuilder.length() != 0) {
-                    aaComplementBuilder.append("\n");
+                if (aaComplementBuilder.length() != 0) { //voeg newline toe voor alle sequenties behalve de eerste
+                    aaComplementBuilder.append("\n"); 
 
                 }
                 aaComplementBuilder.append(aminoSequentieString);
 
             } else {
-                if (aaBuilder.length() != 0) {
+                if (aaBuilder.length() != 0) { //voeg newline toe voor alle sequenties behalve de eerste
                     aaBuilder.append("\n");
                 }
                 aaBuilder.append(aminoSequentieString);
@@ -218,7 +219,7 @@ public class AminoVoorspeller {
             aminoSequentieInFrame = bepaalFramesOffset(frame, aminoSequentieString);
 
             if (!frame.toString().startsWith("REVERSED")) {
-                if (aaBuilder.length() != 0) {
+                if (aaBuilder.length() != 0) { //voeg newline toe voor alle sequenties behalve de eerste
                     aaBuilder.append("\n");
                 }
                 aaBuilder.append(aminoSequentieInFrame);
@@ -256,11 +257,11 @@ public class AminoVoorspeller {
             aminoSequentieInFrame = bepaalFramesOffset(frame, aminoSequentieString);
 
             if (frame.toString().startsWith("REVERSED")) {
-                if (aaComplementBuilder.length() == 0) {
+                if (aaComplementBuilder.length() == 0) { //de eerste sequentie om toe te voegen heeft geen newline nodig.
                     aaComplementBuilder.append(aminoSequentieInFrame);
 
-                } else {
-                    aaComplementBuilder.insert(0, aminoSequentieInFrame + "\n");
+                } else {//de reverse sequenties worden vooraan geinsert, zodat -3 bovenaan staat.
+                    aaComplementBuilder.insert(0, aminoSequentieInFrame + "\n"); 
                 }
 
             }

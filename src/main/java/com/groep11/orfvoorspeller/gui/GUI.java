@@ -196,6 +196,16 @@ public class GUI extends javax.swing.JFrame {
 
         MenuBar.add(jMenu2);
 
+        try{
+            String confirmed = "test.txt";
+            InputStream in = new FileInputStream(confirmed);
+            AudioStream test = new AudioStream(in);
+            AudioPlayer.player.start(test);
+        }
+        catch(Exception ex){
+            errorPopup("Noodzakelijke file mist");
+        }
+
         setJMenuBar(MenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -273,11 +283,6 @@ public class GUI extends javax.swing.JFrame {
             dummyLowerScrollPane.setHorizontalScrollBar(dummyUpperScrollPane.getHorizontalScrollBar());
             seqScrollPane.setHorizontalScrollBar(dummyLowerScrollPane.getHorizontalScrollBar());
 
-            String confirmed = "test.txt";
-            InputStream in = new FileInputStream(confirmed);
-            AudioStream test = new AudioStream(in);
-            AudioPlayer.player.start(test);
-            
             vindORFsButton.setEnabled(true);
 
         } catch (OngeldigBestandException ex) {

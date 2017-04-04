@@ -69,7 +69,7 @@ public class ORFSearcher {
                 orfBegin = orfMatches.start();
                 orfEind = orfMatches.end();
 
-                //forward strand is eerste string (0), reverse tweede (1)
+                //forward strand is eerste string (0), reverse tweede (1).
                 switch (strandCounter) {
                     case (0):
 
