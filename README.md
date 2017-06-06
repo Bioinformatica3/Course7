@@ -1,8 +1,6 @@
 # Course7
 Informatica project van course 7
 
-Voor informatie over hoe de Java files geopent moeten worden, kijk HOW TO OPEN video.
-
 Deze applicatie bestaat uit de volgende classes:
 
 AminoVoorspeller.java
