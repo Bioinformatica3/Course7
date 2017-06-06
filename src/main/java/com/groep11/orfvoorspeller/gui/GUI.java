@@ -38,8 +38,7 @@ import com.groep11.orfvoorspeller.bestandinladen.OngeldigBestandException;
 import com.groep11.orfvoorspeller.orfstonen.OngeldigeORFException;
 import com.groep11.orfvoorspeller.dataopslag.OngelijkAantalKolommenException;
 import com.groep11.orfvoorspeller.dataopslag.SpecifiekeDataOpslag;
-import java.io.FileInputStream;
-import java.io.InputStream;
+
 
 /**
  * De GUI class met alle noodzakelijke GUI elementen, niet alle onderdelen zijn
@@ -100,7 +99,7 @@ public class GUI extends javax.swing.JFrame {
         exportBlastMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("AANSCHOUW DE ORF VOORSPELLER");
+        setTitle("ORF Predictor");
 
         openButton.setText("Open");
         openButton.addActionListener(new java.awt.event.ActionListener() {
