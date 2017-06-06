@@ -126,7 +126,7 @@ public class BestandKiezer {
         File input = null;
 
         JFileChooser keuze = new JFileChooser();
-        keuze.setDialogTitle("LAAD DAT BESTAND BRO");
+        keuze.setDialogTitle("Choose file to open");
         bestandFound = keuze.showOpenDialog(null);
 
         if (bestandFound == JFileChooser.APPROVE_OPTION) {

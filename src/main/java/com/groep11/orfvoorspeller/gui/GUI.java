@@ -40,8 +40,6 @@ import com.groep11.orfvoorspeller.dataopslag.OngelijkAantalKolommenException;
 import com.groep11.orfvoorspeller.dataopslag.SpecifiekeDataOpslag;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 
 /**
  * De GUI class met alle noodzakelijke GUI elementen, niet alle onderdelen zijn
@@ -119,7 +117,7 @@ public class GUI extends javax.swing.JFrame {
         headerLabel.setMinimumSize(new java.awt.Dimension(300, 30));
         headerLabel.setPreferredSize(new java.awt.Dimension(300, 30));
 
-        vindORFsButton.setText("Vind ORFs");
+        vindORFsButton.setText("Find ORFs");
         vindORFsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 vindORFsButtonActionPerformed(evt);
@@ -195,16 +193,6 @@ public class GUI extends javax.swing.JFrame {
         jMenu2.add(exportBlastMenuItem);
 
         MenuBar.add(jMenu2);
-
-        try{
-            String confirmed = "test.txt";
-            InputStream in = new FileInputStream(confirmed);
-            AudioStream test = new AudioStream(in);
-            AudioPlayer.player.start(test);
-        }
-        catch(Exception ex){
-            errorPopup("Noodzakelijke file mist");
-        }
 
         setJMenuBar(MenuBar);
 
@@ -286,11 +274,11 @@ public class GUI extends javax.swing.JFrame {
             vindORFsButton.setEnabled(true);
 
         } catch (OngeldigBestandException ex) {
-            errorPopup("ONGELDIG/GEEN BESTAND GEKOZEN");
+            errorPopup("Invalid/No file chosen");
         } catch (IOException ex) {
-            errorPopup("FOUT TIJDENS INLEZEN VAN BESTAND");
+            errorPopup("Error while reading file");
         } catch (NullPointerException ex) {
-            errorPopup("BESTAND IS LEEG");
+            errorPopup("File is empty!");
         }
     }//GEN-LAST:event_openButtonActionPerformed
     /**
@@ -304,7 +292,7 @@ public class GUI extends javax.swing.JFrame {
         try {
             padTextField.setText(browser.setInputBrowseBestandPad()); //zet de file locatie als text in de textfield
         } catch (OngeldigBestandException ex) {
-            errorPopup("Geen bestand gekozen..");
+            errorPopup("No file chosen..");
         }
 
     }//GEN-LAST:event_browseMenuItemActionPerformed
@@ -317,16 +305,16 @@ public class GUI extends javax.swing.JFrame {
      */
     private void exportOrfsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportOrfsMenuItemActionPerformed
         if (dnaSaved == false) {
-            errorPopup("Moet eerst de DNA sequentie opslaan voordat de bijbehorende ORFs kunnen worden opgeslagen!");
+            errorPopup("DNA sequence has to be saved before ORFs can be stored!");
         } else {
             try {
                 opslag.saveORFs(gevondenORFs);
             } catch (ArrayIndexOutOfBoundsException ex) {
-                errorPopup("LEGE LIJST GEVONDEN");
+                errorPopup("Empty list found!");
             } catch (SQLException ex) {
-                errorPopup("SQL ERROR");
+                errorPopup("SQL Error");
             } catch (OngelijkAantalKolommenException ex) {
-                errorPopup("ONGELIJKE LENGTE ATTRIBUTEN/WAARDES VOOR SQL INSERT");
+                errorPopup("Amount of values to be inserted does not match amount of columns in SQL table");
             }
         }
 
@@ -348,11 +336,11 @@ public class GUI extends javax.swing.JFrame {
             visualisatie.visualizeOnPanes(aaSequentieTextPaneUpper, aaSequentieTextPaneLower);
 
         } catch (CompoundNotFoundException ex) {
-            errorPopup("FOUT IN DNA SEQUENTIE");
+            errorPopup("Invalid DNA sequence");
         } catch (BadLocationException ex) {
-            errorPopup("SQL ERROR");
+            errorPopup("SQL Error");
         } catch (OngeldigeORFException ex) {
-            errorPopup("ONGELIJKE LENGTE ATTRIBUTEN/WAARDES VOOR SQL INSERT");
+            errorPopup("Amount of values to be inserted does not match amount of columns in SQL table");
         }
 
 
@@ -371,13 +359,13 @@ public class GUI extends javax.swing.JFrame {
             dnaSaved = true;
 
         } catch (SQLException ex) {
-            errorPopup("SQL ERROR");
+            errorPopup("SQL Error");
         } catch (ClassNotFoundException ex) {
-            errorPopup("SQL DRIVER ERROR");
+            errorPopup("SQL DRIVER Error");
         } catch (NullPointerException ex) {
-            errorPopup("GEEN DNA SEQUENTIE GEVONDEN OM IN TE LADEN");
+            errorPopup("No DNA sequence found");
         } catch (OngelijkAantalKolommenException ex) {
-            errorPopup("ERROR IN DATA VOOR SQL INSERTEN, HOEVEELHEID WAARDES ONGELIJK AAN HOEVEELHEID ATTRIBUTEN");
+            errorPopup("Amount of values to be inserted does not match amount of columns in SQL table");
         }
     }//GEN-LAST:event_exportDnaMenuItemActionPerformed
 

@@ -16,7 +16,7 @@
 package com.groep11.orfvoorspeller.uitvoerenblast;
 
 /**
- * NIET FUNCTIONEEL
+ * NOT FUNCTIONAL
  *
  * @author Koen
  */

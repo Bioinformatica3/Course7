@@ -30,7 +30,7 @@ import org.biojava.nbio.ws.alignment.qblast.NCBIQBlastOutputProperties;
 import org.biojava.nbio.ws.alignment.qblast.NCBIQBlastService;
 
 /**
- * NIET FUNCTIONEEL (afkomstig uit BioJava Cookbook)
+ * NOT FUNCTIONAL (Source: BioJava Cookbook)
  *
  * @author Koen
  */
